@@ -109,7 +109,8 @@ CSI_COMMANDS = {
     B('M'): (1, 1, lambda s, number, q: s.remove_lines(lines=number[0])),
     B('P'): (1, 1, lambda s, number, q: s.remove_chars(chars=number[0])),
     B('X'): (1, 1, lambda s, number, q: s.erase(s.term_cursor,
-                                                (s.term_cursor[0]+number[0] - 1,
+                                                (s.term_cursor[
+                                                    0]+number[0] - 1,
                                                  s.term_cursor[1]))),
     B('a'): ('alias', B('C')),
     B('c'): (0, 0, lambda s, none, q: s.csi_get_device_attributes(q)),
@@ -131,6 +132,7 @@ CSI_COMMANDS = {
 CHARSET_DEFAULT = 1
 CHARSET_UTF8 = 2
 
+
 class TermModes(object):
     def __init__(self):
         self.reset()
@@ -150,6 +152,7 @@ class TermModes(object):
 
         # charset stuff
         self.main_charset = CHARSET_DEFAULT
+
 
 class TermCharset(object):
     MAPPING = {
@@ -208,6 +211,7 @@ class TermCharset(object):
         else:
             return char
 
+
 class TermScroller(list):
     """
     List subclass that handles the terminal scrollback buffer,
@@ -230,6 +234,7 @@ class TermScroller(list):
     def extend(self, seq):
         self.trunc()
         super(TermScroller, self).extend(seq)
+
 
 class TermCanvas(Canvas):
     cacheable = False
@@ -408,7 +413,7 @@ class TermCanvas(Canvas):
                 # adjust x axis of scrollback buffer to the current width
                 if len(last_line) < self.width:
                     last_line += [self.empty_char()] * \
-                                 (self.width - len(last_line))
+                        (self.width - len(last_line))
                 else:
                     last_line = last_line[:self.width]
 
@@ -494,38 +499,38 @@ class TermCanvas(Canvas):
         """
         if mod == B('#') and char == B('8'):
             self.decaln()
-        elif mod == B('%'): # select main character set
+        elif mod == B('%'):  # select main character set
             if char == B('@'):
                 self.modes.main_charset = CHARSET_DEFAULT
             elif char in B('G8'):
                 # 8 is obsolete and only for backwards compatibility
                 self.modes.main_charset = CHARSET_UTF8
-        elif mod == B('(') or mod == B(')'): # define G0/G1
+        elif mod == B('(') or mod == B(')'):  # define G0/G1
             self.set_g01(char, mod)
-        elif char == B('M'): # reverse line feed
+        elif char == B('M'):  # reverse line feed
             self.linefeed(reverse=True)
-        elif char == B('D'): # line feed
+        elif char == B('D'):  # line feed
             self.linefeed()
-        elif char == B('c'): # reset terminal
+        elif char == B('c'):  # reset terminal
             self.reset()
-        elif char == B('E'): # newline
+        elif char == B('E'):  # newline
             self.newline()
-        elif char == B('H'): # set tabstop
+        elif char == B('H'):  # set tabstop
             self.set_tabstop()
-        elif char == B('Z'): # DECID
+        elif char == B('Z'):  # DECID
             self.widget.respond(ESC + '[?6c')
-        elif char == B('7'): # save current state
+        elif char == B('7'):  # save current state
             self.save_cursor(with_attrs=True)
-        elif char == B('8'): # restore current state
+        elif char == B('8'):  # restore current state
             self.restore_cursor(with_attrs=True)
 
     def parse_osc(self, buf):
         """
         Parse operating system command.
         """
-        if buf.startswith(B(';')): # set window title and icon
+        if buf.startswith(B(';')):  # set window title and icon
             self.widget.set_title(buf[1:])
-        elif buf.startswith(B('3;')): # set window title
+        elif buf.startswith(B('3;')):  # set window title
             self.widget.set_title(buf[2:])
 
     def parse_escape(self, char):
@@ -549,7 +554,7 @@ class TermCanvas(Canvas):
             # end of OSC
             self.parse_osc(self.escbuf[:-1].lstrip(B('0')))
         elif self.parsestate == 2 and self.escbuf.startswith(B('P')) and \
-             len(self.escbuf) == 8:
+                len(self.escbuf) == 8:
             # set palette (ESC]Pnrrggbb)
             pass
         elif self.parsestate == 2 and not self.escbuf and char == B('R'):
@@ -603,7 +608,7 @@ class TermCanvas(Canvas):
         byte -- an integer ordinal
         """
         if (self.modes.main_charset == CHARSET_UTF8 or
-            util._target_encoding == 'utf8'):
+                util._target_encoding == 'utf8'):
             if byte >= 0xc0:
                 # start multibyte sequence
                 self.utf8_eat_bytes = self.get_utf8_len(byte)
@@ -618,7 +623,8 @@ class TermCanvas(Canvas):
                 else:
                     # end multibyte sequence
                     self.utf8_eat_bytes = None
-                    sequence = (self.utf8_buffer+chr2(byte)).decode('utf-8', 'ignore')
+                    sequence = (self.utf8_buffer+chr2(
+                        byte)).decode('utf-8', 'ignore')
                     if len(sequence) == 0:
                         # invalid multibyte sequence, stop processing
                         return
@@ -644,34 +650,34 @@ class TermCanvas(Canvas):
 
         dc = self.modes.display_ctrl
 
-        if char == B("\x1b") and self.parsestate != 2: # escape
+        if char == B("\x1b") and self.parsestate != 2:  # escape
             self.within_escape = True
-        elif not dc and char == B("\x0d"): # carriage return
+        elif not dc and char == B("\x0d"):  # carriage return
             self.carriage_return()
-        elif not dc and char == B("\x0f"): # activate G0
+        elif not dc and char == B("\x0f"):  # activate G0
             self.charset.activate(0)
-        elif not dc and char == B("\x0e"): # activate G1
+        elif not dc and char == B("\x0e"):  # activate G1
             self.charset.activate(1)
-        elif not dc and char in B("\x0a\x0b\x0c"): # line feed
+        elif not dc and char in B("\x0a\x0b\x0c"):  # line feed
             self.linefeed()
             if self.modes.lfnl:
                 self.carriage_return()
-        elif not dc and char == B("\x09"): # char tab
+        elif not dc and char == B("\x09"):  # char tab
             self.tab()
-        elif not dc and char == B("\x08"): # backspace
+        elif not dc and char == B("\x08"):  # backspace
             if x > 0:
                 self.set_term_cursor(x - 1, y)
-        elif not dc and char == B("\x07") and self.parsestate != 2: # beep
+        elif not dc and char == B("\x07") and self.parsestate != 2:  # beep
             # we need to check if we're in parsestate 2, as an OSC can be
             # terminated by the BEL character!
             self.widget.beep()
-        elif not dc and char in B("\x18\x1a"): # CAN/SUB
+        elif not dc and char in B("\x18\x1a"):  # CAN/SUB
             self.leave_escape()
-        elif not dc and char == B("\x7f"): # DEL
-            pass # this is ignored
+        elif not dc and char == B("\x7f"):  # DEL
+            pass  # this is ignored
         elif self.within_escape:
             self.parse_escape(char)
-        elif not dc and char == B("\x9b"): # CSI (equivalent to "ESC [")
+        elif not dc and char == B("\x9b"):  # CSI (equivalent to "ESC [")
             self.within_escape = True
             self.escbuf = bytes()
             self.parsestate = 1
@@ -794,7 +800,8 @@ class TermCanvas(Canvas):
             if x + 1 >= self.width and not self.is_rotten_cursor:
                 # "rotten cursor" - this is when the cursor gets to the rightmost
                 # position of the screen, the cursor position remains the same but
-                # one last set_char() is allowed for that piece of sh^H^H"border".
+                # one last set_char() is allowed for that piece of
+                # sh^H^H"border".
                 self.is_rotten_cursor = True
                 self.push_char(char, x, y)
             else:
@@ -1086,13 +1093,15 @@ class TermCanvas(Canvas):
                 fg = None
             else:
                 fg = self.attrspec.foreground_number
-                if fg >= 8: fg -= 8
+                if fg >= 8:
+                    fg -= 8
 
             if 'default' in self.attrspec.background:
                 bg = None
             else:
                 bg = self.attrspec.background_number
-                if bg >= 8: bg -= 8
+                if bg >= 8:
+                    bg -= 8
 
             for attr in ('bold', 'underline', 'blink', 'standout'):
                 if not getattr(self.attrspec, attr):
@@ -1312,6 +1321,7 @@ class TermCanvas(Canvas):
             return [self.cols()]*self.rows()
         return self.content()
 
+
 class Terminal(Widget):
     _selectable = True
     _sizing = frozenset([BOX])
@@ -1523,14 +1533,14 @@ class Terminal(Widget):
         try:
             data = os.read(self.master, 4096)
         except OSError, e:
-            if e.errno == 5: # End Of File
+            if e.errno == 5:  # End Of File
                 data = ''
-            elif e.errno == errno.EWOULDBLOCK: # empty buffer
+            elif e.errno == errno.EWOULDBLOCK:  # empty buffer
                 return
             else:
                 raise
 
-        if data == '': # EOF on BSD
+        if data == '':  # EOF on BSD
             self.terminate()
             self._emit('closed')
             return
@@ -1549,7 +1559,7 @@ class Terminal(Widget):
             return
 
         if (self.last_key == self.escape_sequence
-            and key == self.escape_sequence):
+                and key == self.escape_sequence):
             # escape sequence pressed twice...
             self.last_key = key
             self.keygrab = True

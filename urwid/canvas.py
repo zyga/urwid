@@ -21,10 +21,11 @@
 
 import weakref
 
-from urwid.util import rle_len, rle_append_modify, rle_join_modify, rle_product, \
-    calc_width, calc_text_pos, apply_target_encoding, trim_text_attr_cs
-from urwid.text_layout import trim_line, LayoutSegment
 from urwid.compat import bytes
+from urwid.text_layout import trim_line, LayoutSegment
+from urwid.util import (
+    rle_len, rle_append_modify, rle_join_modify, rle_product, calc_width,
+    calc_text_pos, apply_target_encoding, trim_text_attr_cs)
 
 
 class CanvasCache(object):
@@ -183,16 +184,19 @@ class Canvas(object):
     """
     cacheable = True
 
-    _finalized_error = CanvasError("This canvas has been finalized. "
-                                   "Use CompositeCanvas to wrap this canvas if "
-                                   "you need to make changes.")
-    _renamed_error = CanvasError("The old Canvas class is now called "
-                                 "TextCanvas. Canvas is now the base class for all canvas "
-                                 "classes.")
-    _old_repr_error = CanvasError("The internal representation of "
-                                  "canvases is no longer stored as .text, .attr, and .cs "
-                                  "lists, please see the TextCanvas class for the new "
-                                  "representation of canvas content.")
+    _finalized_error = CanvasError(
+        "This canvas has been finalized. "
+        "Use CompositeCanvas to wrap this canvas if "
+        "you need to make changes.")
+    _renamed_error = CanvasError(
+        "The old Canvas class is now called "
+        "TextCanvas. Canvas is now the base class for all canvas "
+        "classes.")
+    _old_repr_error = CanvasError(
+        "The internal representation of "
+        "canvases is no longer stored as .text, .attr, and .cs "
+        "lists, please see the TextCanvas class for the new "
+        "representation of canvas content.")
 
     def __init__(self, value1=None, value2=None, value3=None):
         """
@@ -334,7 +338,8 @@ class TextCanvas(Canvas):
             for t in text:
                 if type(t) != bytes:
                     raise CanvasError(
-                        "Canvas text must be plain strings encoded in the screen's encoding", repr(text))
+                        ("Canvas text must be plain strings encoded in the"
+                         " screen's encoding"), repr(text))
                 widths.append(calc_width(t, 0, len(t)))
         else:
             assert type(maxcol) == int
@@ -356,8 +361,9 @@ class TextCanvas(Canvas):
         for i in range(len(text)):
             w = widths[i]
             if w > maxcol:
-                raise CanvasError("Canvas text is wider than the maxcol specified \n%r\n%r\n%r" % (
-                    maxcol, widths, text))
+                raise CanvasError(
+                    ("Canvas text is wider than the maxcol specified"
+                     " \n%r\n%r\n%r") % (maxcol, widths, text))
             if w < maxcol:
                 text[i] = text[i] + bytes().rjust(maxcol-w)
             a_gap = len(text[i]) - rle_len(attr[i])
@@ -370,7 +376,8 @@ class TextCanvas(Canvas):
             cs_gap = len(text[i]) - rle_len(cs[i])
             if cs_gap < 0:
                 raise CanvasError(
-                    "Character Set extends beyond text \n%r\n%r" % (text[i], cs[i]))
+                    "Character Set extends beyond text \n%r\n%r" % (
+                        text[i], cs[i]))
             if cs_gap:
                 rle_append_modify(cs[i], (None, cs_gap))
 

@@ -202,7 +202,8 @@ class TermTest(unittest.TestCase):
         self.expect('aaa   ddd      eee\n   ccc   fff bbb')
 
     def test_erase_line(self):
-        self.write('1234567890\e[5D\e[K\n1234567890\e[5D\e[1K\naaaaaaaaaaaaaaa\e[2Ka')
+        self.write(
+            '1234567890\e[5D\e[K\n1234567890\e[5D\e[1K\naaaaaaaaaaaaaaa\e[2Ka')
         self.expect('12345\n      7890\n               a')
 
     def test_erase_display(self):
@@ -212,7 +213,8 @@ class TermTest(unittest.TestCase):
         self.expect('   x5a98765')
 
     def test_scrolling_region_simple(self):
-        self.write('\e[10;20r\e[10f1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\e[faa')
+        self.write(
+            '\e[10;20r\e[10f1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\e[faa')
         self.expect('aa' + '\n' * 9 + '2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12')
 
     def test_scrolling_region_reverse(self):
@@ -220,7 +222,8 @@ class TermTest(unittest.TestCase):
         self.expect('\n\nbbb\nXXX\n\naaa')
 
     def test_scrolling_region_move(self):
-        self.write('\e[10;20r\e[2J\e[10Bfoo\rbar\rblah\rmooh\r\e[10Aone\r\eM\eMtwo\r\eM\eMthree\r\eM\eMa')
+        self.write(
+            '\e[10;20r\e[2J\e[10Bfoo\rbar\rblah\rmooh\r\e[10Aone\r\eM\eMtwo\r\eM\eMthree\r\eM\eMa')
         self.expect('ahree\n\n\n\n\n\n\n\n\n\nmooh')
 
     def test_scrolling_twice(self):
@@ -228,7 +231,8 @@ class TermTest(unittest.TestCase):
         self.expect('\ntest')
 
     def test_cursor_scrolling_region(self):
-        self.write('\e[?6h\e[10;20r\e[10f1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\e[faa')
+        self.write(
+            '\e[?6h\e[10;20r\e[10f1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\e[faa')
         self.expect('\n' * 9 + 'aa\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12')
 
     def test_relative_region_jump(self):

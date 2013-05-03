@@ -292,7 +292,7 @@ class CheckBox(WidgetWrap):
         """
         if self.state == False:
             self.set_state(True)
-        elif self.state == True:
+        elif self.state:
             if self.has_mixed:
                 self.set_state('mixed')
             else:

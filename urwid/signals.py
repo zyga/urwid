@@ -20,8 +20,6 @@
 # Urwid web site: http://excess.org/urwid/
 
 
-
-
 class MetaSignals(type):
     """
     register the list of signals in the class varable signals,
@@ -31,10 +29,11 @@ class MetaSignals(type):
         signals = d.get("signals", [])
         for superclass in cls.__bases__:
             signals.extend(getattr(superclass, 'signals', []))
-        signals = dict([(x,None) for x in signals]).keys()
+        signals = dict([(x, None) for x in signals]).keys()
         d["signals"] = signals
         register_signal(cls, signals)
         super(MetaSignals, cls).__init__(name, bases, d)
+
 
 def setdefaultattr(obj, name, value):
     # like dict.setdefault() for object attributes
@@ -45,7 +44,7 @@ def setdefaultattr(obj, name, value):
 
 
 class Signals(object):
-    _signal_attr = '_urwid_signals' # attribute to attach to signal senders
+    _signal_attr = '_urwid_signals'  # attribute to attach to signal senders
 
     def __init__(self):
         self._supported = {}
@@ -81,8 +80,8 @@ class Signals(object):
         """
         sig_cls = obj.__class__
         if not name in self._supported.get(sig_cls, []):
-            raise NameError, "No such signal %r for object %r" % \
-                (name, obj)
+            raise NameError("No such signal %r for object %r" %
+                            (name, obj))
         d = setdefaultattr(obj, self._signal_attr, {})
         d.setdefault(name, []).append((callback, user_arg))
 
@@ -126,4 +125,3 @@ emit_signal = _signals.emit
 register_signal = _signals.register
 connect_signal = _signals.connect
 disconnect_signal = _signals.disconnect
-

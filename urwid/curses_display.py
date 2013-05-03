@@ -92,7 +92,7 @@ class Screen(BaseScreen, RealTerminal):
         """
         Initialize the screen and input mode.
         """
-        assert self._started == False
+        assert self._started is False
 
         self.s = curses.initscr()
         self.has_color = curses.has_colors()
@@ -122,7 +122,7 @@ class Screen(BaseScreen, RealTerminal):
         """
         Restore the screen.
         """
-        if self._started == False:
+        if self._started is False:
             return
         curses.echo()
         self._curs_set(1)
@@ -153,8 +153,8 @@ class Screen(BaseScreen, RealTerminal):
         """
         Initialize all 63 color pairs based on the term:
         bg * 8 + 7 - fg
-        So to get a color, we just need to use that term and get the right color
-        pair number.
+        So to get a color, we just need to use that term and get the right
+        color pair number.
         """
         if not self.has_color:
             return

@@ -30,6 +30,7 @@ CURSOR_MAX_LEFT = 'cursor max left'
 CURSOR_MAX_RIGHT = 'cursor max right'
 ACTIVATE = 'activate'
 
+
 class CommandMap(object):
     """
     dict-like object for looking up commands from keystrokes
@@ -101,4 +102,4 @@ class CommandMap(object):
         c._command = dict(self._command)
         return c
 
-command_map = CommandMap() # shared command mappings
+command_map = CommandMap()  # shared command mappings

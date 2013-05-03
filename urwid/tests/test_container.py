@@ -327,10 +327,10 @@ class WidgetSquishTest(unittest.TestCase):
     def test_frame(self):
         self.wstest(urwid.Frame(urwid.SolidFill()))
         self.wstest(urwid.Frame(urwid.SolidFill(),
-            header=urwid.Text("hello")))
+                                header=urwid.Text("hello")))
         self.wstest(urwid.Frame(urwid.SolidFill(),
-            header=urwid.Text("hello"),
-            footer=urwid.Text("hello")))
+                                header=urwid.Text("hello"),
+                                footer=urwid.Text("hello")))
 
     def test_pile(self):
         self.wstest(urwid.Pile([urwid.SolidFill()]))
@@ -356,10 +356,10 @@ class CommonContainerTest(unittest.TestCase):
         self.assertEquals(p.focus, None)
         self.assertRaises(IndexError, lambda: getattr(p, 'focus_position'))
         self.assertRaises(IndexError, lambda: setattr(p, 'focus_position',
-            None))
+                                                      None))
         self.assertRaises(IndexError, lambda: setattr(p, 'focus_position', 0))
         p.contents = [(t1, ('pack', None)), (t2, ('pack', None)),
-            (sf, ('given', 3)), (t3, ('pack', None))]
+                      (sf, ('given', 3)), (t3, ('pack', None))]
         p.focus_position = 1
         del p.contents[0]
         self.assertEquals(p.focus_position, 0)
@@ -419,7 +419,7 @@ class CommonContainerTest(unittest.TestCase):
         self.assertEquals(c.focus, None)
         self.assertRaises(IndexError, lambda: getattr(c, 'focus_position'))
         self.assertRaises(IndexError, lambda: setattr(c, 'focus_position',
-            None))
+                                                      None))
         self.assertRaises(IndexError, lambda: setattr(c, 'focus_position', 0))
         c.contents = [
             (t1, ('pack', None, False)),
@@ -498,7 +498,7 @@ class CommonContainerTest(unittest.TestCase):
         self.assertEquals(lb.focus, None)
         self.assertRaises(IndexError, lambda: getattr(lb, 'focus_position'))
         self.assertRaises(IndexError, lambda: setattr(lb, 'focus_position',
-            None))
+                                                      None))
         self.assertRaises(IndexError, lambda: setattr(lb, 'focus_position', 0))
 
         t1 = urwid.Text(u'one')
@@ -520,7 +520,7 @@ class CommonContainerTest(unittest.TestCase):
         self.assertEquals(gf.contents, [])
         self.assertRaises(IndexError, lambda: getattr(gf, 'focus_position'))
         self.assertRaises(IndexError, lambda: setattr(gf, 'focus_position',
-            None))
+                                                      None))
         self.assertRaises(IndexError, lambda: setattr(gf, 'focus_position', 0))
         self.assertEquals(gf.options(), ('given', 5))
         self.assertEquals(gf.options(width_amount=9), ('given', 9))
@@ -541,7 +541,7 @@ class CommonContainerTest(unittest.TestCase):
         self.assertEquals(gf.focus_position, 2)
         self.assertRaises(urwid.GridFlowError, lambda: gf.contents.append(()))
         self.assertRaises(urwid.GridFlowError, lambda: gf.contents.insert(1,
-            (t1, ('pack', None))))
+                         (t1, ('pack', None))))
         gf.focus_position = 0
         self.assertRaises(IndexError, lambda: setattr(
             gf, 'focus_position', -1))
@@ -558,15 +558,15 @@ class CommonContainerTest(unittest.TestCase):
         s1 = urwid.SolidFill(u'1')
         s2 = urwid.SolidFill(u'2')
         o = urwid.Overlay(s1, s2,
-            'center', ('relative', 50), 'middle', ('relative', 50))
+                          'center', ('relative', 50), 'middle', ('relative', 50))
         self.assertEquals(o.focus, s1)
         self.assertEquals(o.focus_position, 1)
         self.assertRaises(IndexError, lambda: setattr(o, 'focus_position',
-            None))
+                                                      None))
         self.assertRaises(IndexError, lambda: setattr(o, 'focus_position', 2))
 
         self.assertEquals(o.contents[0], (s2,
-            urwid.Overlay._DEFAULT_BOTTOM_OPTIONS))
+                                          urwid.Overlay._DEFAULT_BOTTOM_OPTIONS))
         self.assertEquals(o.contents[1], (s1, (
             'center', None, 'relative', 50, None, 0, 0,
             'middle', None, 'relative', 50, None, 0, 0)))
@@ -578,9 +578,9 @@ class CommonContainerTest(unittest.TestCase):
         self.assertEquals(f.focus, s1)
         self.assertEquals(f.focus_position, 'body')
         self.assertRaises(IndexError, lambda: setattr(f, 'focus_position',
-            None))
+                                                      None))
         self.assertRaises(IndexError, lambda: setattr(f, 'focus_position',
-            'header'))
+                                                      'header'))
 
         t1 = urwid.Text(u'one')
         t2 = urwid.Text(u'two')

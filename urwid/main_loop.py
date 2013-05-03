@@ -35,7 +35,8 @@ from urwid.wimp import PopUpTarget
 from urwid import signals
 from urwid.display_common import INPUT_DESCRIPTORS_CHANGED
 
-PIPE_BUFFER_READ_SIZE = 4096 # can expect this much on Linux, so try for that
+PIPE_BUFFER_READ_SIZE = 4096  # can expect this much on Linux, so try for that
+
 
 class ExitMainLoop(Exception):
     """
@@ -43,6 +44,7 @@ class ExitMainLoop(Exception):
     will exit cleanly.
     """
     pass
+
 
 class MainLoop(object):
     """
@@ -91,11 +93,11 @@ class MainLoop(object):
     """
 
     def __init__(self, widget, palette=(), screen=None,
-            handle_mouse=True, input_filter=None, unhandled_input=None,
-            event_loop=None, pop_ups=False):
+                 handle_mouse=True, input_filter=None, unhandled_input=None,
+                 event_loop=None, pop_ups=False):
         self._widget = widget
         self.handle_mouse = handle_mouse
-        self.pop_ups = pop_ups # triggers property setting side-effect
+        self.pop_ups = pop_ups  # triggers property setting side-effect
 
         if not screen:
             from urwid import raw_display
@@ -111,9 +113,9 @@ class MainLoop(object):
         self._input_filter = input_filter
 
         if not hasattr(screen, 'get_input_descriptors'
-                ) and event_loop is not None:
+                       ) and event_loop is not None:
             raise NotImplementedError("screen object passed "
-                "%r does not support external event loops" % (screen,))
+                                      "%r does not support external event loops" % (screen,))
         if event_loop is None:
             event_loop = SelectEventLoop()
         self.event_loop = event_loop
@@ -127,8 +129,8 @@ class MainLoop(object):
             self._topmost_widget.original_widget = self._widget
         else:
             self._topmost_widget = self._widget
-    widget = property(lambda self:self._widget, _set_widget, doc=
-       """
+    widget = property(lambda self: self._widget, _set_widget, doc=
+                      """
        Property for the topmost widget used to draw the screen.
        This must be a box widget.
        """)
@@ -139,7 +141,7 @@ class MainLoop(object):
             self._topmost_widget = PopUpTarget(self._widget)
         else:
             self._topmost_widget = self._widget
-    pop_ups = property(lambda self:self._pop_ups, _set_pop_ups)
+    pop_ups = property(lambda self: self._pop_ups, _set_pop_ups)
 
     def set_alarm_in(self, sec, callback, user_data=None):
         """
@@ -256,7 +258,6 @@ class MainLoop(object):
         """
         return self.event_loop.remove_watch_file(handle)
 
-
     def run(self):
         """
         Start the main loop handling input events and updating the screen. The
@@ -312,6 +313,7 @@ class MainLoop(object):
         self.draw_screen()
 
         fd_handles = []
+
         def reset_input_descriptors(only_remove=False):
             for handle in fd_handles:
                 self.event_loop.remove_watch_file(handle)
@@ -326,7 +328,7 @@ class MainLoop(object):
 
         try:
             signals.connect_signal(self.screen, INPUT_DESCRIPTORS_CHANGED,
-                reset_input_descriptors)
+                                   reset_input_descriptors)
         except NameError:
             pass
         # watch our input descriptors
@@ -340,7 +342,7 @@ class MainLoop(object):
         self.event_loop.remove_enter_idle(idle_handle)
         reset_input_descriptors(True)
         signals.disconnect_signal(self.screen, INPUT_DESCRIPTORS_CHANGED,
-            reset_input_descriptors)
+                                  reset_input_descriptors)
 
     def _update(self, timeout=False):
         """
@@ -375,12 +377,12 @@ class MainLoop(object):
         self._input_timeout = None
 
         max_wait, keys, raw = self.screen.get_input_nonblocking()
-        
+
         if max_wait is not None:
             # if get_input_nonblocking wants to be called back
             # make sure it happens with an alarm
-            self._input_timeout = self.event_loop.alarm(max_wait, 
-                lambda: self._update(timeout=True)) 
+            self._input_timeout = self.event_loop.alarm(max_wait,
+                                                        lambda: self._update(timeout=True))
 
         keys = self.input_filter(keys, raw)
 
@@ -413,7 +415,7 @@ class MainLoop(object):
                 else:
                     self.screen.set_input_timeouts(None)
                 keys, raw = self.screen.get_input(True)
-                if not keys and next_alarm: 
+                if not keys and next_alarm:
                     sec = next_alarm[0] - time.time()
                     if sec <= 0:
                         break
@@ -482,7 +484,7 @@ class MainLoop(object):
             if is_mouse_event(k):
                 event, button, col, row = k
                 if self._topmost_widget.mouse_event(self.screen_size,
-                    event, button, col, row, focus=True ):
+                                                    event, button, col, row, focus=True):
                     k = None
             elif self._topmost_widget.selectable():
                 k = self._topmost_widget.keypress(self.screen_size, k)
@@ -562,9 +564,6 @@ class MainLoop(object):
 
         canvas = self._topmost_widget.render(self.screen_size, focus=True)
         self.screen.draw_screen(self.screen_size, canvas)
-
-
-
 
 
 class SelectEventLoop(object):
@@ -764,8 +763,8 @@ class SelectEventLoop(object):
             if self._alarms:
                 tm = self._alarms[0][0]
                 timeout = max(0, tm - time.time())
-            if self._did_something and (not self._alarms or 
-                    (self._alarms and timeout > 0)):
+            if self._did_something and (not self._alarms or
+                                       (self._alarms and timeout > 0)):
                 timeout = 0
                 tm = 'idle'
             ready, w, err = select.select(fds, [], fds, timeout)
@@ -800,7 +799,7 @@ if not PYTHON3:
             self._alarms = []
             self._watch_files = {}
             self._idle_handle = 0
-            self._glib_idle_enabled = False # have we called glib.idle_add?
+            self._glib_idle_enabled = False  # have we called glib.idle_add?
             self._idle_callbacks = {}
             self._loop = self.gobject.MainLoop()
             self._exc_info = None
@@ -882,7 +881,7 @@ if not PYTHON3:
                 self._enable_glib_idle()
                 return True
             self._watch_files[fd] = \
-                 self.gobject.io_add_watch(fd,self.gobject.IO_IN,io_callback)
+                self.gobject.io_add_watch(fd, self.gobject.IO_IN, io_callback)
             return fd
 
         def remove_watch_file(self, handle):
@@ -927,7 +926,7 @@ if not PYTHON3:
             for callback in self._idle_callbacks.values():
                 callback()
             self._glib_idle_enabled = False
-            return False # ask glib not to call again (or we would be called
+            return False  # ask glib not to call again (or we would be called
 
         def remove_enter_idle(self, handle):
             """
@@ -940,7 +939,6 @@ if not PYTHON3:
             except KeyError:
                 return False
             return True
-
 
         def run(self):
             """
@@ -1000,7 +998,7 @@ if not PYTHON3:
             ZeroDivisionError: integer division or modulo by zero
             """
 
-        def handle_exit(self,f):
+        def handle_exit(self, f):
             """
             Decorator that cleanly exits the :class:`GLibEventLoop` if
             :exc:`ExitMainLoop` is thrown inside of the wrapped function. Store the
@@ -1009,9 +1007,9 @@ if not PYTHON3:
 
             *f* -- function to be wrapped
             """
-            def wrapper(*args,**kargs):
+            def wrapper(*args, **kargs):
                 try:
-                    return f(*args,**kargs)
+                    return f(*args, **kargs)
                 except ExitMainLoop:
                     self._loop.quit()
                 except:
@@ -1021,7 +1019,6 @@ if not PYTHON3:
                         self._loop.quit()
                 return False
             return wrapper
-
 
     try:
         from twisted.internet.abstract import FileDescriptor
@@ -1040,13 +1037,11 @@ if not PYTHON3:
         def doRead(self):
             return self.cb()
 
-
-
     class TwistedEventLoop(object):
         """
         Event loop based on Twisted_
         """
-        _idle_emulation_delay = 1.0/256 # a short time (in seconds)
+        _idle_emulation_delay = 1.0/256  # a short time (in seconds)
 
         def __init__(self, reactor=None, manage_reactor=True):
             """
@@ -1087,7 +1082,8 @@ if not PYTHON3:
             seconds -- floating point time to wait before calling callback
             callback -- function to call from event loop
             """
-            handle = self.reactor.callLater(seconds, self.handle_exit(callback))
+            handle = self.reactor.callLater(
+                seconds, self.handle_exit(callback))
             return handle
 
         def remove_alarm(self, handle):
@@ -1126,7 +1122,7 @@ if not PYTHON3:
             callback -- function to call when input is available
             """
             ind = TwistedInputDescriptor(self.reactor, fd,
-                self.handle_exit(callback))
+                                         self.handle_exit(callback))
             self._watch_files[fd] = ind
             self.reactor.addReader(ind)
             return fd
@@ -1176,7 +1172,7 @@ if not PYTHON3:
             if self._twisted_idle_enabled:
                 return
             self.reactor.callLater(self._idle_emulation_delay,
-                self.handle_exit(self._twisted_idle_callback, enable_idle=False))
+                                   self.handle_exit(self._twisted_idle_callback, enable_idle=False))
             self._twisted_idle_enabled = True
 
         def _twisted_idle_callback(self):
@@ -1249,10 +1245,10 @@ if not PYTHON3:
 
             *f* -- function to be wrapped
             """
-            def wrapper(*args,**kargs):
+            def wrapper(*args, **kargs):
                 rval = None
                 try:
-                    rval = f(*args,**kargs)
+                    rval = f(*args, **kargs)
                 except ExitMainLoop:
                     if self.manage_reactor:
                         self.reactor.stop()
@@ -1266,7 +1262,6 @@ if not PYTHON3:
                     self._enable_twisted_idle()
                 return rval
             return wrapper
-
 
 
 def _refl(name, rval=None, exit=False):
@@ -1289,27 +1284,30 @@ def _refl(name, rval=None, exit=False):
         def __init__(self, name, rval=None):
             self._name = name
             self._rval = rval
+
         def __call__(self, *argl, **argd):
             args = ", ".join([repr(a) for a in argl])
             if args and argd:
                 args = args + ", "
-            args = args + ", ".join([k+"="+repr(v) for k,v in argd.items()])
+            args = args + ", ".join([k+"="+repr(v) for k, v in argd.items()])
             print self._name+"("+args+")"
             if exit:
                 raise ExitMainLoop()
             return self._rval
+
         def __getattr__(self, attr):
             if attr.endswith("_rval"):
                 raise AttributeError()
-            #print self._name+"."+attr
+            # print self._name+"."+attr
             if hasattr(self, attr+"_rval"):
                 return Reflect(self._name+"."+attr, getattr(self, attr+"_rval"))
             return Reflect(self._name+"."+attr)
     return Reflect(name)
 
+
 def _test():
     import doctest
     doctest.testmod()
 
-if __name__=='__main__':
+if __name__ == '__main__':
     _test()

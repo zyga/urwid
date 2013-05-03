@@ -25,7 +25,7 @@ except NameError:
     PYTHON3 = False
 
 try:
-    from setuptools import setup, Extension # distribute required for Python 3
+    from setuptools import setup, Extension  # distribute required for Python 3
     have_setuptools = True
 except ImportError:
     if PYTHON3:
@@ -35,23 +35,27 @@ except ImportError:
 
 import os
 
-exec(open(os.path.join("urwid","version.py")).read())
+exec(open(os.path.join("urwid", "version.py")).read())
 release = __version__
 
 setup_d = {
-    'name':"urwid",
-    'version':release,
-    'author':"Ian Ward",
-    'author_email':"ian@excess.org",
-    'ext_modules':[Extension('urwid.str_util', sources=['source/str_util.c'])],
-    'packages':['urwid'],
-    'url':"http://excess.org/urwid/",
-    'download_url':"http://excess.org/urwid/urwid-%s.tar.gz"%release,
-    'license':"LGPL",
-    'keywords':"curses ui widget scroll listbox user interface text layout console ncurses",
-    'platforms':"unix-like",
-    'description': "A full-featured console (xterm et al.) user interface library",
-    'long_description':"""
+    'name': "urwid",
+    'version': release,
+    'author': "Ian Ward",
+    'author_email': "ian@excess.org",
+    'ext_modules': [
+        Extension('urwid.str_util', sources=['source/str_util.c'])],
+    'packages': ['urwid'],
+    'url': "http://excess.org/urwid/",
+    'download_url': "http://excess.org/urwid/urwid-%s.tar.gz" % release,
+    'license': "LGPL",
+    'keywords': (
+        "curses ui widget scroll listbox user interface text layout console"
+        " ncurses"),
+    'platforms': "unix-like",
+    'description':  (
+        "A full-featured console (xterm et al.) user interface library"),
+    'long_description': """
 Urwid is a console user interface library.  It includes many features
 useful for text console application developers including:
 
@@ -75,12 +79,13 @@ Documentation:
 Example Program Screenshots:
   http://excess.org/urwid/examples.html
 """[1:],
-    'classifiers':[
+    'classifiers': [
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
         "Environment :: Console :: Curses",
         "Intended Audience :: Developers",
-        "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
+        ("License :: OSI Approved :: GNU Library or Lesser General Public"
+         " License (LGPL)"),
         "Operating System :: POSIX",
         "Operating System :: Unix",
         "Operating System :: MacOS :: MacOS X",
@@ -94,8 +99,8 @@ Example Program Screenshots:
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.2",
         "Programming Language :: Python :: 3.3",
-        ],
-     }
+    ],
+}
 
 if have_setuptools:
     setup_d['zip_safe'] = False

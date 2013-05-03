@@ -1,5 +1,6 @@
 import urwid
 
+
 def show_or_exit(key):
     if key in ('q', 'Q'):
         raise urwid.ExitMainLoop()

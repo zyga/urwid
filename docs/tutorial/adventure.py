@@ -1,11 +1,13 @@
 import urwid
 
+
 class ActionButton(urwid.Button):
     def __init__(self, caption, callback):
         super(ActionButton, self).__init__("")
         urwid.connect_signal(self, 'click', callback)
         self._w = urwid.AttrMap(urwid.SelectableIcon(caption, 1),
-            None, focus_map='reversed')
+                                None, focus_map='reversed')
+
 
 class Place(urwid.WidgetWrap):
     def __init__(self, name, choices):
@@ -20,6 +22,7 @@ class Place(urwid.WidgetWrap):
     def enter_place(self, button):
         game.update_place(self)
 
+
 class Thing(urwid.WidgetWrap):
     def __init__(self, name):
         super(Thing, self).__init__(
@@ -29,6 +32,7 @@ class Thing(urwid.WidgetWrap):
     def take_thing(self, button):
         self._w = urwid.Text(u" - %s (taken)" % self.name)
         game.take_thing(self)
+
 
 def exit_program(button):
     raise urwid.ExitMainLoop()
@@ -56,6 +60,7 @@ map_top = Place(u'porch', [
     ]),
 ])
 
+
 class AdventureGame(object):
     def __init__(self):
         self.log = urwid.SimpleFocusListWalker([])
@@ -64,7 +69,7 @@ class AdventureGame(object):
         self.update_place(map_top)
 
     def update_place(self, place):
-        if self.log: # disable interaction with previous place
+        if self.log:  # disable interaction with previous place
             self.log[-1] = urwid.WidgetDisable(self.log[-1])
         self.log.append(urwid.Pile([place.heading] + place.choices))
         self.top.focus_position = len(self.log) - 1

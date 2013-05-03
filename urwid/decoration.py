@@ -813,7 +813,7 @@ class Filler(WidgetDecoration):
         return calculate_top_bottom_filler(maxrow,
                                            self.valign_type, self.valign_amount,
                                            self.height_type, self.height_amount,
-            self.min_height, self.top, self.bottom)
+                                           self.min_height, self.top, self.bottom)
 
     def render(self, size, focus=False):
         """Render self.original_widget with space above and/or below."""
@@ -892,7 +892,7 @@ class Filler(WidgetDecoration):
 
         if self.height_type == PACK:
             return self._original_widget.move_cursor_to_coords((maxcol,),
-                col, row-top)
+                                                               col, row-top)
         return self._original_widget.move_cursor_to_coords(
             (maxcol, maxrow-top-bottom), col, row-top)
 
@@ -908,9 +908,9 @@ class Filler(WidgetDecoration):
 
         if self.height_type == PACK:
             return self._original_widget.mouse_event((maxcol,),
-                event, button, col, row-top, focus)
+                                                     event, button, col, row-top, focus)
         return self._original_widget.mouse_event((maxcol, maxrow-top-bottom),
-            event, button, col, row-top, focus)
+                                                 event, button, col, row-top, focus)
 
 
 class WidgetDisable(WidgetDecoration):
@@ -949,8 +949,8 @@ def normalize_align(align, err):
     elif type(align) == tuple and len(align) == 2 and align[0] == RELATIVE:
         return align
     raise err("align value %r is not one of 'left', 'center', "
-        "'right', ('relative', percentage 0=left 100=right)"
-        % (align,))
+              "'right', ('relative', percentage 0=left 100=right)"
+              % (align,))
 
 
 def simplify_align(align_type, align_amount):
@@ -975,8 +975,8 @@ def normalize_width(width, err):
     elif type(width) == tuple and len(width) == 2 and width[0] == RELATIVE:
         return width
     raise err("width value %r is not one of fixed number of columns, "
-        "'pack', ('relative', percentage of total width), 'clip'"
-        % (width,))
+              "'pack', ('relative', percentage of total width), 'clip'"
+              % (width,))
 
 
 def simplify_width(width_type, width_amount):
@@ -1002,8 +1002,8 @@ def normalize_valign(valign, err):
             valign[0] == RELATIVE):
         return valign
     raise err("valign value %r is not one of 'top', 'middle', "
-        "'bottom', ('relative', percentage 0=left 100=right)"
-        % (valign,))
+              "'bottom', ('relative', percentage 0=left 100=right)"
+              % (valign,))
 
 
 def simplify_valign(valign_type, valign_amount):
@@ -1029,8 +1029,8 @@ def normalize_height(height, err):
     elif isinstance(height, int):
         return (GIVEN, height)
     raise err("height value %r is not one of fixed number of columns, "
-        "'pack', ('relative', percentage of total height)"
-        % (height,))
+              "'pack', ('relative', percentage of total height)"
+              % (height,))
 
 
 def simplify_height(height_type, height_amount):
@@ -1113,7 +1113,7 @@ def calculate_top_bottom_filler(
 
 
 def calculate_left_right_padding(maxcol, align_type, align_amount,
-    width_type, width_amount, min_width, left, right):
+                                 width_type, width_amount, min_width, left, right):
     """
     Return the amount of padding (or clipping) on the left and
     right part of maxcol columns to satisfy the following:

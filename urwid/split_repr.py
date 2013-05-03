@@ -22,6 +22,7 @@
 from inspect import getargspec
 from urwid.compat import PYTHON3, bytes
 
+
 def split_repr(self):
     """
     Return a helpful description of the object using
@@ -46,17 +47,19 @@ def split_repr(self):
     <Bar words here too attrs='appear too' barttr=42>
     """
     alist = [(str(k), normalize_repr(v))
-        for k, v in self._repr_attrs().items()]
+             for k, v in self._repr_attrs().items()]
     alist.sort()
     words = self._repr_words()
     if not words and not alist:
         # if we're just going to print the classname fall back
         # to the previous __repr__ implementation instead
         return super(self.__class__, self).__repr__()
-    if words and alist: words.append("")
+    if words and alist:
+        words.append("")
     return "<%s %s>" % (self.__class__.__name__,
-        " ".join(words) +
-        " ".join(["%s=%s" % itm for itm in alist]))
+                        " ".join(words) +
+                        " ".join(["%s=%s" % itm for itm in alist]))
+
 
 def normalize_repr(v):
     """
@@ -74,6 +77,7 @@ def normalize_repr(v):
             "%s: %s" % itm for itm in items]) + "}"
 
     return repr(v)
+
 
 def python3_repr(v):
     """
@@ -93,13 +97,12 @@ def python3_repr(v):
     return r
 
 
-
 def remove_defaults(d, fn):
     """
     Remove keys in d that are set to the default values from
-    fn.  This method is used to unclutter the _repr_attrs() 
+    fn.  This method is used to unclutter the _repr_attrs()
     return value.
-    
+
     d will be modified by this function.
 
     Returns d.
@@ -140,10 +143,9 @@ def remove_defaults(d, fn):
     return d
 
 
-
 def _test():
     import doctest
     doctest.testmod()
 
-if __name__=='__main__':
+if __name__ == '__main__':
     _test()

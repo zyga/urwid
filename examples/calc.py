@@ -159,7 +159,7 @@ class Cell:
     def set_result(self, result):
         """Set the numeric result for this cell."""
 
-        if result == None:
+        if result is None:
             self.result.set_text("")
         else:
             self.result.set_text("%d" % result)
@@ -416,7 +416,7 @@ class CellColumn(urwid.WidgetWrap):
             f, (i, sub) = self.walker.get_focus()
         else:
             i = self.content.index(start_from)
-            if i == None:
+            if i is None:
                 return False
 
         focus_cell = self.walker.get_cell(i)

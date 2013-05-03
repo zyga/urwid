@@ -22,7 +22,7 @@
 
 import sys
 
-try: # python 2.4 and 2.5 compat
+try:  # python 2.4 and 2.5 compat
     bytes = bytes
 except NameError:
     bytes = str
@@ -44,5 +44,3 @@ else:
     chr2 = chr
     B = lambda x: x
     bytes3 = lambda x: bytes().join([chr(c) for c in x])
-
-

@@ -33,15 +33,16 @@ import sys
 if urwid.web_display.is_web_request():
     Screen = urwid.web_display.Screen
 else:
-    if len(sys.argv)>1 and sys.argv[1][:1] == "r":
+    if len(sys.argv) > 1 and sys.argv[1][:1] == "r":
         Screen = urwid.raw_display.Screen
     else:
         Screen = urwid.curses_display.Screen
 
+
 def key_test():
     screen = Screen()
     header = urwid.Text("Values from get_input(). Q exits.")
-    header = urwid.AttrWrap(header,'header')
+    header = urwid.AttrWrap(header, 'header')
     lw = urwid.SimpleListWalker([])
     listbox = urwid.ListBox(lw)
     listbox = urwid.AttrWrap(listbox, 'listbox')
@@ -59,36 +60,34 @@ def key_test():
                 for v in k:
                     if out:
                         out += [', ']
-                    out += [('key',repr(v))]
+                    out += [('key', repr(v))]
                 t += ["("] + out + [")"]
             else:
-                t += ["'",('key',k),"' "]
-        
-        rawt = urwid.Text(", ".join(["%d"%r for r in raw]))
-        
+                t += ["'", ('key', k), "' "]
+
+        rawt = urwid.Text(", ".join(["%d" % r for r in raw]))
+
         if t:
             lw.append(
                 urwid.Columns([
-                    ('weight',2,urwid.Text(t)),
+                    ('weight', 2, urwid.Text(t)),
                     rawt])
-                )
-            listbox.set_focus(len(lw)-1,'above')
+            )
+            listbox.set_focus(len(lw)-1, 'above')
         return keys
 
     loop = urwid.MainLoop(top, [
         ('header', 'black', 'dark cyan', 'standout'),
         ('key', 'yellow', 'dark blue', 'bold'),
-        ('listbox', 'light gray', 'black' ),
-        ], screen, input_filter=input_filter)
+        ('listbox', 'light gray', 'black'),
+    ], screen, input_filter=input_filter)
 
     try:
-        old = screen.tty_signal_keys('undefined','undefined',
-            'undefined','undefined','undefined')
+        old = screen.tty_signal_keys('undefined', 'undefined',
+                                     'undefined', 'undefined', 'undefined')
         loop.run()
     finally:
         screen.tty_signal_keys(*old)
-    
-                
 
 
 def main():
@@ -96,7 +95,7 @@ def main():
     if urwid.web_display.handle_short_request():
         return
     key_test()
-    
 
-if '__main__'==__name__ or urwid.web_display.is_web_request():
+
+if '__main__' == __name__ or urwid.web_display.is_web_request():
     main()

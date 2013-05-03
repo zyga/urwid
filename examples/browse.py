@@ -41,9 +41,9 @@ import urwid
 class FlagFileWidget(urwid.TreeWidget):
     # apply an attribute to the expand/unexpand icons
     unexpanded_icon = urwid.AttrMap(urwid.TreeWidget.unexpanded_icon,
-        'dirmark')
+                                    'dirmark')
     expanded_icon = urwid.AttrMap(urwid.TreeWidget.expanded_icon,
-        'dirmark')
+                                  'dirmark')
 
     def __init__(self, node):
         self.__super.__init__(node)
@@ -93,7 +93,6 @@ class FileTreeWidget(FlagFileWidget):
 
     def get_display_text(self):
         return self.get_node().get_key()
-    
 
 
 class EmptyWidget(urwid.TreeWidget):
@@ -132,7 +131,8 @@ class FileNode(urwid.TreeNode):
     def __init__(self, path, parent=None):
         depth = path.count(dir_sep())
         key = os.path.basename(path)
-        urwid.TreeNode.__init__(self, path, key=key, parent=parent, depth=depth)
+        urwid.TreeNode.__init__(
+            self, path, key=key, parent=parent, depth=depth)
 
     def load_parent(self):
         parentname, myname = os.path.split(self.get_value())
@@ -164,7 +164,7 @@ class DirectoryNode(urwid.ParentNode):
         else:
             depth = path.count(dir_sep())
             key = os.path.basename(path)
-        urwid.ParentNode.__init__(self, path, key=key, parent=parent, 
+        urwid.ParentNode.__init__(self, path, key=key, parent=parent,
                                   depth=depth)
 
     def load_parent(self):
@@ -180,13 +180,13 @@ class DirectoryNode(urwid.ParentNode):
             path = self.get_value()
             # separate dirs and files
             for a in os.listdir(path):
-                if os.path.isdir(os.path.join(path,a)):
+                if os.path.isdir(os.path.join(path, a)):
                     dirs.append(a)
                 else:
                     files.append(a)
         except OSError, e:
             depth = self.get_depth() + 1
-            self._children[None] = ErrorNode(self, parent=self, key=None, 
+            self._children[None] = ErrorNode(self, parent=self, key=None,
                                              depth=depth)
             return [None]
 
@@ -198,8 +198,8 @@ class DirectoryNode(urwid.ParentNode):
         # collect dirs and files together again
         keys = dirs + files
         if len(keys) == 0:
-            depth=self.get_depth() + 1
-            self._children[None] = EmptyNode(self, parent=self, key=None, 
+            depth = self.get_depth() + 1
+            self._children[None] = EmptyNode(self, parent=self, key=None,
                                              depth=depth)
             keys = [None]
         return keys
@@ -224,19 +224,19 @@ class DirectoryNode(urwid.ParentNode):
 class DirectoryBrowser:
     palette = [
         ('body', 'black', 'light gray'),
-        ('flagged', 'black', 'dark green', ('bold','underline')),
+        ('flagged', 'black', 'dark green', ('bold', 'underline')),
         ('focus', 'light gray', 'dark blue', 'standout'),
-        ('flagged focus', 'yellow', 'dark cyan', 
-                ('bold','standout','underline')),
+        ('flagged focus', 'yellow', 'dark cyan',
+         ('bold', 'standout', 'underline')),
         ('head', 'yellow', 'black', 'standout'),
         ('foot', 'light gray', 'black'),
-        ('key', 'light cyan', 'black','underline'),
+        ('key', 'light cyan', 'black', 'underline'),
         ('title', 'white', 'black', 'bold'),
         ('dirmark', 'black', 'dark cyan', 'bold'),
         ('flag', 'dark gray', 'light gray'),
         ('error', 'dark red', 'light gray'),
-        ]
-    
+    ]
+
     footer_text = [
         ('title', "Directory Browser"), "    ",
         ('key', "UP"), ",", ('key', "DOWN"), ",",
@@ -246,12 +246,11 @@ class DirectoryBrowser:
         ('key', "+"), ",",
         ('key', "-"), "  ",
         ('key', "LEFT"), "  ",
-        ('key', "HOME"), "  ", 
+        ('key', "HOME"), "  ",
         ('key', "END"), "  ",
         ('key', "Q"),
-        ]
-    
-    
+    ]
+
     def __init__(self):
         cwd = os.getcwd()
         store_initial_cwd(cwd)
@@ -259,26 +258,26 @@ class DirectoryBrowser:
         self.listbox = urwid.TreeListBox(urwid.TreeWalker(DirectoryNode(cwd)))
         self.listbox.offset_rows = 1
         self.footer = urwid.AttrWrap(urwid.Text(self.footer_text),
-            'foot')
+                                     'foot')
         self.view = urwid.Frame(
-            urwid.AttrWrap(self.listbox, 'body'), 
-            header=urwid.AttrWrap(self.header, 'head'), 
+            urwid.AttrWrap(self.listbox, 'body'),
+            header=urwid.AttrWrap(self.header, 'head'),
             footer=self.footer)
 
     def main(self):
         """Run the program."""
-        
+
         self.loop = urwid.MainLoop(self.view, self.palette,
-            unhandled_input=self.unhandled_input)
+                                   unhandled_input=self.unhandled_input)
         self.loop.run()
-    
+
         # on exit, write the flagged filenames to the console
         names = [escape_filename_sh(x) for x in get_flagged_names()]
         print " ".join(names)
 
     def unhandled_input(self, k):
         # update display of focus directory
-        if k in ('q','Q'):
+        if k in ('q', 'Q'):
             raise urwid.ExitMainLoop()
 
 
@@ -286,51 +285,52 @@ def main():
     DirectoryBrowser().main()
 
 
-
-
 #######
 # global cache of widgets
 _widget_cache = {}
+
 
 def add_widget(path, widget):
     """Add the widget for a given path"""
 
     _widget_cache[path] = widget
 
+
 def get_flagged_names():
     """Return a list of all filenames marked as flagged."""
-    
+
     l = []
     for w in _widget_cache.values():
         if w.flagged:
             l.append(w.get_node().get_value())
     return l
-            
 
 
 ######
 # store path components of initial current working directory
 _initial_cwd = []
 
+
 def store_initial_cwd(name):
     """Store the initial current working directory path components."""
-    
+
     global _initial_cwd
     _initial_cwd = name.split(dir_sep())
+
 
 def starts_expanded(name):
     """Return True if directory is a parent of initial cwd."""
 
     if name is '/':
         return True
-    
+
     l = name.split(dir_sep())
     if len(l) > len(_initial_cwd):
         return False
-    
+
     if l != _initial_cwd[:len(l)]:
         return False
-    
+
     return True
 
 
@@ -338,36 +338,38 @@ def escape_filename_sh(name):
     """Return a hopefully safe shell-escaped version of a filename."""
 
     # check whether we have unprintable characters
-    for ch in name: 
-        if ord(ch) < 32: 
+    for ch in name:
+        if ord(ch) < 32:
             # found one so use the ansi-c escaping
             return escape_filename_sh_ansic(name)
-            
+
     # all printable characters, so return a double-quoted version
-    name.replace('\\','\\\\')
-    name.replace('"','\\"')
-    name.replace('`','\\`')
-    name.replace('$','\\$')
+    name.replace('\\', '\\\\')
+    name.replace('"', '\\"')
+    name.replace('`', '\\`')
+    name.replace('$', '\\$')
     return '"'+name+'"'
 
 
 def escape_filename_sh_ansic(name):
     """Return an ansi-c shell-escaped version of a filename."""
-    
-    out =[]
+
+    out = []
     # gather the escaped characters into a list
     for ch in name:
         if ord(ch) < 32:
-            out.append("\\x%02x"% ord(ch))
+            out.append("\\x%02x" % ord(ch))
         elif ch == '\\':
             out.append('\\\\')
         else:
             out.append(ch)
-            
+
     # slap them back together in an ansi-c quote  $'...'
     return "$'" + "".join(out) + "'"
 
 SPLIT_RE = re.compile(r'[a-zA-Z]+|\d+')
+
+
 def alphabetize(s):
     L = []
     for isdigit, group in itertools.groupby(SPLIT_RE.findall(s), key=lambda x: x.isdigit()):
@@ -378,11 +380,11 @@ def alphabetize(s):
             L.append((''.join(group).lower(), 0))
     return L
 
+
 def dir_sep():
     """Return the separator used in this os."""
-    return getattr(os.path,'sep','/')
+    return getattr(os.path, 'sep', '/')
 
 
-if __name__=="__main__": 
+if __name__ == "__main__":
     main()
-        

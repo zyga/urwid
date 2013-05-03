@@ -326,7 +326,7 @@ class TextCanvas(Canvas):
         check_width -- check and fix width of all lines in text
         """
         Canvas.__init__(self)
-        if text == None:
+        if text is None:
             text = []
 
         if check_width:
@@ -347,9 +347,9 @@ class TextCanvas(Canvas):
             else:
                 maxcol = 0
 
-        if attr == None:
+        if attr is None:
             attr = [[] for x in range(len(text))]
-        if cs == None:
+        if cs is None:
             cs = [[] for x in range(len(text))]
 
         # pad text and attr to maxcol

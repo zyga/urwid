@@ -1,5 +1,6 @@
 import urwid
 
+
 class CursorPudding(urwid.Widget):
     _sizing = frozenset(['flow'])
     _selectable = True

@@ -204,24 +204,24 @@ class ShardsTrimTest(unittest.TestCase):
         shards = [(5, [(0, 0, 10, 5, None, "foo"), (0, 0, 5, 8, None, "baz")]),
                   (3, [(0, 0, 10, 3, None, "bar")])]
         self.stsides(shards, 0, 15,
-                    [(5, [(0, 0, 10, 5, None, "foo"), (0, 0, 5, 8, None, "baz")]),
-            (3, [(0, 0, 10, 3, None, "bar")])])
+                     [(5, [(0, 0, 10, 5, None, "foo"), (0, 0, 5, 8, None, "baz")]),
+                    (3, [(0, 0, 10, 3, None, "bar")])])
         self.stsides(shards, 2, 13,
-            [(5, [(2, 0, 8, 5, None, "foo"), (0, 0, 5, 8, None, "baz")]),
-            (3, [(2, 0, 8, 3, None, "bar")])])
+                     [(5, [(2, 0, 8, 5, None, "foo"), (0, 0, 5, 8, None, "baz")]),
+                    (3, [(2, 0, 8, 3, None, "bar")])])
         self.stsides(shards, 2, 10,
-            [(5, [(2, 0, 8, 5, None, "foo"), (0, 0, 2, 8, None, "baz")]),
-            (3, [(2, 0, 8, 3, None, "bar")])])
+                     [(5, [(2, 0, 8, 5, None, "foo"), (0, 0, 2, 8, None, "baz")]),
+                    (3, [(2, 0, 8, 3, None, "bar")])])
         self.stsides(shards, 2, 8,
-            [(5, [(2, 0, 8, 5, None, "foo")]),
-            (3, [(2, 0, 8, 3, None, "bar")])])
+                     [(5, [(2, 0, 8, 5, None, "foo")]),
+                    (3, [(2, 0, 8, 3, None, "bar")])])
         self.stsides(shards, 2, 6,
-            [(5, [(2, 0, 6, 5, None, "foo")]),
-            (3, [(2, 0, 6, 3, None, "bar")])])
+                     [(5, [(2, 0, 6, 5, None, "foo")]),
+                    (3, [(2, 0, 6, 3, None, "bar")])])
         self.stsides(shards, 10, 5,
-            [(8, [(0, 0, 5, 8, None, "baz")])])
+                     [(8, [(0, 0, 5, 8, None, "baz")])])
         self.stsides(shards, 11, 3,
-            [(8, [(1, 0, 3, 8, None, "baz")])])
+                     [(8, [(1, 0, 3, 8, None, "baz")])])
 
 
 class ShardsJoinTest(unittest.TestCase):
@@ -234,27 +234,28 @@ class ShardsJoinTest(unittest.TestCase):
             5, [(0, 0, 10, 5, None, "foo"), (0, 0, 5, 8, None, "baz")]),
             (3, [(0, 0, 10, 3, None, "bar")])]
         shards2 = [(3, [(0, 0, 10, 3, None, "aaa")]),
-            (5, [(0, 0, 10, 5, None, "bbb")])]
+                   (5, [(0, 0, 10, 5, None, "bbb")])]
         shards3 = [(3, [(0, 0, 10, 3, None, "111")]),
-            (2, [(0, 0, 10, 3, None, "222")]),
-            (3, [(0, 0, 10, 3, None, "333")])]
+                   (2, [(0, 0, 10, 3, None, "222")]),
+                   (3, [(0, 0, 10, 3, None, "333")])]
 
         self.sjt([shards1], shards1)
         self.sjt([shards1, shards2],
-            [(3, [(0, 0, 10, 5, None, "foo"), (0, 0, 5, 8, None, "baz"),
+                 [(3, [(0, 0, 10, 5, None, "foo"), (0, 0, 5, 8, None, "baz"),
                 (0, 0, 10, 3, None, "aaa")]),
-            (2, [(0, 0, 10, 5, None, "bbb")]),
-            (3, [(0, 0, 10, 3, None, "bar")])])
+                     (2, [(0, 0, 10, 5, None, "bbb")]),
+                     (3, [(0, 0, 10, 3, None, "bar")])])
         self.sjt([shards1, shards3],
-            [(3, [(0, 0, 10, 5, None, "foo"), (0, 0, 5, 8, None, "baz"),
+                 [(3, [(0, 0, 10, 5, None, "foo"), (0, 0, 5, 8, None, "baz"),
                 (0, 0, 10, 3, None, "111")]),
-            (2, [(0, 0, 10, 3, None, "222")]),
-            (3, [(0, 0, 10, 3, None, "bar"), (0, 0, 10, 3, None, "333")])])
+                     (2, [(0, 0, 10, 3, None, "222")]),
+                     (3, [(0, 0, 10, 3, None, "bar"), (0, 0, 10, 3, None, "333")])])
         self.sjt([shards1, shards2, shards3],
-            [(3, [(0, 0, 10, 5, None, "foo"), (0, 0, 5, 8, None, "baz"),
+                 [(3, [(0, 0, 10, 5, None, "foo"), (0, 0, 5, 8, None, "baz"),
                 (0, 0, 10, 3, None, "aaa"), (0, 0, 10, 3, None, "111")]),
-            (2, [(0, 0, 10, 5, None, "bbb"), (0, 0, 10, 3, None, "222")]),
-            (3, [(0, 0, 10, 3, None, "bar"), (0, 0, 10, 3, None, "333")])])
+                     (2, [(0, 0, 10, 5, None, "bbb"), (
+                         0, 0, 10, 3, None, "222")]),
+                     (3, [(0, 0, 10, 3, None, "bar"), (0, 0, 10, 3, None, "333")])])
 
 
 class CanvasJoinTest(unittest.TestCase):
@@ -276,30 +277,30 @@ class CanvasJoinTest(unittest.TestCase):
         how_you = C([B("how"), B("you")])
 
         self.cjtest("one", [(hello, 5)],
-            [[(None, None, B("hello"))]])
+                    [[(None, None, B("hello"))]])
         self.cjtest("two", [(hello, 5), (there, 5)],
-            [[(None, None, B("hello")), ("a", None, B("there"))]])
+                    [[(None, None, B("hello")), ("a", None, B("there"))]])
         self.cjtest("two space", [(hello, 7), (there, 5)],
-            [[(None, None, B("hello")), (None, None, B("  ")),
-            ("a", None, B("there"))]])
+                    [[(None, None, B("hello")), (None, None, B("  ")),
+                   ("a", None, B("there"))]])
         self.cjtest("three space", [(hi, 4), (how, 3), (dy, 2)],
-            [[(None, None, B("hi")), (None, None, B("  ")), ("a", None, B("h")),
-            (None, None, B("ow")), (None, None, B("dy"))]])
+                    [[(None, None, B("hi")), (None, None, B("  ")), ("a", None, B("h")),
+                   (None, None, B("ow")), (None, None, B("dy"))]])
         self.cjtest("four space", [(a, 2), (hi, 3), (dy, 3), (a, 1)],
-            [[(None, None, B("a")), (None, None, B(" ")),
-            (None, None, B("hi")), (None, None, B(" ")),
-            (None, None, B("dy")), (None, None, B(" ")),
-            (None, None, B("a"))]])
+                    [[(None, None, B("a")), (None, None, B(" ")),
+                   (None, None, B("hi")), (None, None, B(" ")),
+                        (None, None, B("dy")), (None, None, B(" ")),
+                        (None, None, B("a"))]])
         self.cjtest("pile 2", [(how_you, 4), (hi, 2)],
-            [[(None, None, B('how')), (None, None, B(' ')),
-            (None, None, B('hi'))],
-            [(None, None, B('you')), (None, None, B(' ')),
-            (None, None, B('  '))]])
+                    [[(None, None, B('how')), (None, None, B(' ')),
+                   (None, None, B('hi'))],
+                        [(None, None, B('you')), (None, None, B(' ')),
+                         (None, None, B('  '))]])
         self.cjtest("pile 2r", [(hi, 4), (how_you, 3)],
-            [[(None, None, B('hi')), (None, None, B('  ')),
-            (None, None, B('how'))],
-            [(None, None, B('    ')),
-            (None, None, B('you'))]])
+                    [[(None, None, B('hi')), (None, None, B('  ')),
+                   (None, None, B('how'))],
+                        [(None, None, B('    ')),
+                         (None, None, B('you'))]])
 
 
 class CanvasOverlayTest(unittest.TestCase):
@@ -317,46 +318,46 @@ class CanvasOverlayTest(unittest.TestCase):
 
     def test1(self):
         self.cotest("left", "qxqxqxqx", [], "HI", [], 0, 6,
-            [[(None, None, B("HI")), (None, None, B("qxqxqx"))]])
+                    [[(None, None, B("HI")), (None, None, B("qxqxqx"))]])
         self.cotest("right", "qxqxqxqx", [], "HI", [], 6, 0,
-            [[(None, None, B("qxqxqx")), (None, None, B("HI"))]])
+                    [[(None, None, B("qxqxqx")), (None, None, B("HI"))]])
         self.cotest("center", "qxqxqxqx", [], "HI", [], 3, 3,
-            [[(None, None, B("qxq")), (None, None, B("HI")),
-            (None, None, B("xqx"))]])
+                    [[(None, None, B("qxq")), (None, None, B("HI")),
+                   (None, None, B("xqx"))]])
         self.cotest("center2", "qxqxqxqx", [], "HI  ", [], 2, 2,
-            [[(None, None, B("qx")), (None, None, B("HI  ")),
-            (None, None, B("qx"))]])
+                    [[(None, None, B("qx")), (None, None, B("HI  ")),
+                   (None, None, B("qx"))]])
         self.cotest("full", "rz", [], "HI", [], 0, 0,
-            [[(None, None, B("HI"))]])
+                    [[(None, None, B("HI"))]])
 
     def test2(self):
         self.cotest("same", "asdfghjkl", [('a', 9)], "HI", [('a', 2)], 4, 3,
-            [[('a', None, B("asdf")), ('a', None, B("HI")), ('a', None, B("jkl"))]])
+                    [[('a', None, B("asdf")), ('a', None, B("HI")), ('a', None, B("jkl"))]])
         self.cotest("diff", "asdfghjkl", [('a', 9)], "HI", [('b', 2)], 4, 3,
-            [[('a', None, B("asdf")), ('b', None, B("HI")), ('a', None, B("jkl"))]])
+                    [[('a', None, B("asdf")), ('b', None, B("HI")), ('a', None, B("jkl"))]])
         self.cotest("None end", "asdfghjkl", [('a', 9)], "HI  ", [('a', 2)],
-            2, 3,
-            [[('a', None, B("as")), ('a', None, B("HI")),
-            (None, None, B("  ")), ('a', None, B("jkl"))]])
+                    2, 3,
+                    [[('a', None, B("as")), ('a', None, B("HI")),
+                   (None, None, B("  ")), ('a', None, B("jkl"))]])
         self.cotest("float end", "asdfghjkl", [('a', 3)], "HI", [('a', 2)],
-            4, 3,
-            [[('a', None, B("asd")), (None, None, B("f")),
-            ('a', None, B("HI")), (None, None, B("jkl"))]])
+                    4, 3,
+                    [[('a', None, B("asd")), (None, None, B("f")),
+                   ('a', None, B("HI")), (None, None, B("jkl"))]])
         self.cotest("cover 2", "asdfghjkl", [('a', 5), ('c', 4)], "HI",
-            [('b', 2)], 4, 3,
-            [[('a', None, B("asdf")), ('b', None, B("HI")), ('c', None, B("jkl"))]])
+                    [('b', 2)], 4, 3,
+                    [[('a', None, B("asdf")), ('b', None, B("HI")), ('c', None, B("jkl"))]])
         self.cotest("cover 2-2", "asdfghjkl",
-            [('a', 4), ('d', 1), ('e', 1), ('c', 3)],
-            "HI", [('b', 2)], 4, 3,
-            [[('a', None, B("asdf")), ('b', None, B("HI")), ('c', None, B("jkl"))]])
+                    [('a', 4), ('d', 1), ('e', 1), ('c', 3)],
+                    "HI", [('b', 2)], 4, 3,
+                    [[('a', None, B("asdf")), ('b', None, B("HI")), ('c', None, B("jkl"))]])
 
     def test3(self):
         urwid.set_encoding("euc-jp")
         self.cotest("db0", "\xA1\xA1\xA1\xA1\xA1\xA1", [], "HI", [], 2, 2,
-            [[(None, None, B("\xA1\xA1")), (None, None, B("HI")),
-            (None, None, B("\xA1\xA1"))]])
+                    [[(None, None, B("\xA1\xA1")), (None, None, B("HI")),
+                   (None, None, B("\xA1\xA1"))]])
         self.cotest("db1", "\xA1\xA1\xA1\xA1\xA1\xA1", [], "OHI", [], 1, 2,
-            [[(None, None, B(" ")), (None, None, B("OHI")),
+                   [[(None, None, B(" ")), (None, None, B("OHI")),
             (None, None, B("\xA1\xA1"))]])
         self.cotest("db2", "\xA1\xA1\xA1\xA1\xA1\xA1", [], "OHI", [], 2, 1,
             [[(None, None, B("\xA1\xA1")), (None, None, B("OHI")),

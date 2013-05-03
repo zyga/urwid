@@ -42,10 +42,9 @@ from twisted.cred.portal import Portal
 from twisted.conch.interfaces import IConchUser, ISession
 from twisted.conch.insults.insults import TerminalProtocol, ServerProtocol
 from twisted.conch.manhole_ssh import (ConchFactory, TerminalRealm,
-    TerminalUser, TerminalSession, TerminalSessionTransport)
+                                       TerminalUser, TerminalSession, TerminalSessionTransport)
 
 from twisted.python.components import Componentized, Adapter
-
 
 
 class IUrwidUi(Interface):
@@ -80,8 +79,6 @@ class IUrwidMind(Interface):
         """Refresh the UI"""
 
 
-
-
 class UrwidUi(object):
 
     def __init__(self, urwid_mind):
@@ -106,7 +103,6 @@ class UrwidUi(object):
         self.screen.loop = loop
         loop.run()
         return loop
-
 
 
 class UnhandledKeyHandler(object):
@@ -156,9 +152,6 @@ class UrwidMind(Adapter):
         self.ui.loop.draw_screen()
 
 
-
-
-
 class TwistedScreen(urwid.BaseScreen):
     """A Urwid screen which knows about the Twisted terminal protocol that is
     driving it.
@@ -186,7 +179,7 @@ class TwistedScreen(urwid.BaseScreen):
         self.bright_is_bold = True
         self.register_palette_entry(None, 'black', 'white')
         urwid.signals.connect_signal(self, urwid.UPDATE_PALETTE_ENTRY,
-            self._on_update_palette_entry)
+                                     self._on_update_palette_entry)
         # Don't need to wait for anything to start
         self._started = True
 
@@ -197,7 +190,7 @@ class TwistedScreen(urwid.BaseScreen):
         """
         return self.terminalProtocol.width, self.terminalProtocol.height
 
-    def draw_screen(self, (maxcol, maxrow), r ):
+    def draw_screen(self, (maxcol, maxrow), r):
         """Render a canvas to the terminal.
 
         The canvas contains all the information required to render the Urwid
@@ -205,7 +198,7 @@ class TwistedScreen(urwid.BaseScreen):
         tuples. This very simple implementation iterates each row and simply
         writes it out.
         """
-        #self.terminal.eraseDisplay()
+        # self.terminal.eraseDisplay()
         lasta = None
         for i, row in enumerate(r.content()):
             self.terminal.cursorPosition(0, i)
@@ -213,7 +206,7 @@ class TwistedScreen(urwid.BaseScreen):
                 if attr != lasta:
                     text = '%s%s' % (self._attr_to_escape(attr), text)
                 lasta = attr
-                #if cs or attr:
+                # if cs or attr:
                 #    print cs, attr
                 self.write(text)
         cursor = r.get_cursor()
@@ -264,7 +257,7 @@ class TwistedScreen(urwid.BaseScreen):
     def _on_update_palette_entry(self, name, *attrspecs):
         # copy the attribute to a dictionary containing the escape seqences
         self._pal_escape[name] = self._attrspec_to_escape(
-           attrspecs[{16:0,1:1,88:2,256:3}[self.colors]])
+            attrspecs[{16: 0, 1: 1, 88: 2, 256: 3}[self.colors]])
 
     def _attr_to_escape(self, a):
         if a in self._pal_escape:
@@ -274,7 +267,7 @@ class TwistedScreen(urwid.BaseScreen):
         # undefined attributes use default/default
         # TODO: track and report these
         return self._attrspec_to_escape(
-            urwid.AttrSpec('default','default'))
+            urwid.AttrSpec('default', 'default'))
 
     def _attrspec_to_escape(self, a):
         """
@@ -453,4 +446,3 @@ def create_application(application_name, urwid_mind_factory,
     svc = create_service(urwid_mind_factory, 6022)
     svc.setServiceParent(application)
     return application
-

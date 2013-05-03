@@ -235,77 +235,77 @@ class ListBoxRenderTest(unittest.TestCase):
                    ["1   ", "2   ", "3   ", "4   ", "5   "], None)
 
         self.ltest("simple multi text item render off top",
-            [T("1"), T("2"), T("3\n4"), T("5"), T("6")], 2, 1,
-            ["2   ", "3   ", "4   ", "5   ", "6   "], None)
+                   [T("1"), T("2"), T("3\n4"), T("5"), T("6")], 2, 1,
+                   ["2   ", "3   ", "4   ", "5   ", "6   "], None)
 
     def test2_trim(self):
         T = urwid.Text
 
         self.ltest("trim unfocused bottom",
-            [T("1\n2"), T("3\n4"), T("5\n6")], 1, 2,
-            ["1   ", "2   ", "3   ", "4   ", "5   "], None)
+                   [T("1\n2"), T("3\n4"), T("5\n6")], 1, 2,
+                   ["1   ", "2   ", "3   ", "4   ", "5   "], None)
 
         self.ltest("trim unfocused top",
-            [T("1\n2"), T("3\n4"), T("5\n6")], 1, 1,
-            ["2   ", "3   ", "4   ", "5   ", "6   "], None)
+                   [T("1\n2"), T("3\n4"), T("5\n6")], 1, 1,
+                   ["2   ", "3   ", "4   ", "5   ", "6   "], None)
 
         self.ltest("trim none full focus",
-            [T("1\n2\n3\n4\n5")], 0, 0,
-            ["1   ", "2   ", "3   ", "4   ", "5   "], None)
+                   [T("1\n2\n3\n4\n5")], 0, 0,
+                   ["1   ", "2   ", "3   ", "4   ", "5   "], None)
 
         self.ltest("trim focus bottom",
-            [T("1\n2\n3\n4\n5\n6")], 0, 0,
-            ["1   ", "2   ", "3   ", "4   ", "5   "], None)
+                   [T("1\n2\n3\n4\n5\n6")], 0, 0,
+                   ["1   ", "2   ", "3   ", "4   ", "5   "], None)
 
         self.ltest("trim focus top",
-            [T("1\n2\n3\n4\n5\n6")], 0, -1,
-            ["2   ", "3   ", "4   ", "5   ", "6   "], None)
+                   [T("1\n2\n3\n4\n5\n6")], 0, -1,
+                   ["2   ", "3   ", "4   ", "5   ", "6   "], None)
 
         self.ltest("trim focus top and bottom",
-            [T("1\n2\n3\n4\n5\n6\n7")], 0, -1,
-            ["2   ", "3   ", "4   ", "5   ", "6   "], None)
+                   [T("1\n2\n3\n4\n5\n6\n7")], 0, -1,
+                   ["2   ", "3   ", "4   ", "5   ", "6   "], None)
 
     def test3_shift(self):
         T, E = urwid.Text, urwid.Edit
 
         self.ltest("shift up one fit",
-            [T("1\n2"), T("3"), T("4"), T("5"), T("6")], 4, 5,
-            ["2   ", "3   ", "4   ", "5   ", "6   "], None)
+                   [T("1\n2"), T("3"), T("4"), T("5"), T("6")], 4, 5,
+                   ["2   ", "3   ", "4   ", "5   ", "6   "], None)
 
         e = E("", "ab\nc", 1)
         e.set_edit_pos(2)
         self.ltest("shift down one cursor over edge",
-            [e, T("3"), T("4"), T("5\n6")], 0, -1,
-            ["ab  ", "c   ", "3   ", "4   ", "5   "], (2, 0))
+                   [e, T("3"), T("4"), T("5\n6")], 0, -1,
+                   ["ab  ", "c   ", "3   ", "4   ", "5   "], (2, 0))
 
         self.ltest("shift up one cursor over edge",
-            [T("1\n2"), T("3"), T("4"), E("", "d\ne")], 3, 4,
-            ["2   ", "3   ", "4   ", "d   ", "e   "], (1, 4))
+                   [T("1\n2"), T("3"), T("4"), E("", "d\ne")], 3, 4,
+                   ["2   ", "3   ", "4   ", "d   ", "e   "], (1, 4))
 
         self.ltest("shift none cursor top focus over edge",
-            [E("", "ab\n"), T("3"), T("4"), T("5\n6")], 0, -1,
-            ["    ", "3   ", "4   ", "5   ", "6   "], (0, 0))
+                   [E("", "ab\n"), T("3"), T("4"), T("5\n6")], 0, -1,
+                   ["    ", "3   ", "4   ", "5   ", "6   "], (0, 0))
 
         e = E("", "abc\nd")
         e.set_edit_pos(3)
         self.ltest("shift none cursor bottom focus over edge",
-            [T("1\n2"), T("3"), T("4"), e], 3, 4,
-            ["1   ", "2   ", "3   ", "4   ", "abc "], (3, 4))
+                   [T("1\n2"), T("3"), T("4"), e], 3, 4,
+                   ["1   ", "2   ", "3   ", "4   ", "abc "], (3, 4))
 
     def test4_really_large_contents(self):
         T, E = urwid.Text, urwid.Edit
         self.ltest("really large edit",
-            [T(u"hello"*100)], 0, 0,
-            ["hell", "ohel", "lohe", "lloh", "ello"], None)
+                   [T(u"hello"*100)], 0, 0,
+                   ["hell", "ohel", "lohe", "lloh", "ello"], None)
 
         self.ltest("really large edit",
-            [E(u"", u"hello"*100)], 0, 0,
-            ["hell", "ohel", "lohe", "lloh", "llo "], (3, 4))
+                   [E(u"", u"hello"*100)], 0, 0,
+                   ["hell", "ohel", "lohe", "lloh", "llo "], (3, 4))
 
 
 class ListBoxKeypressTest(unittest.TestCase):
     def ktest(self, desc, key, body, focus, offset_inset,
-        exp_focus, exp_offset_inset, exp_cur, lbox=None):
+              exp_focus, exp_offset_inset, exp_cur, lbox=None):
 
         if lbox is None:
             lbox = urwid.ListBox(body)
@@ -332,50 +332,50 @@ class ListBoxKeypressTest(unittest.TestCase):
         T, S, E = urwid.Text, SelectableText, urwid.Edit
 
         self.ktest("direct selectable both visible", 'up',
-            [S(""), S("")], 1, 1,
-            0, 0, None)
+                   [S(""), S("")], 1, 1,
+                   0, 0, None)
 
         self.ktest("selectable skip one all visible", 'up',
-            [S(""), T(""), S("")], 2, 2,
-            0, 0, None)
+                   [S(""), T(""), S("")], 2, 2,
+                   0, 0, None)
 
         key, lbox = self.ktest("nothing above no scroll", 'up',
-            [S("")], 0, 0,
-            0, 0, None)
+                               [S("")], 0, 0,
+                               0, 0, None)
         assert key == 'up'
 
         key, lbox = self.ktest("unselectable above no scroll", 'up',
-            [T(""), T(""), S("")], 2, 2,
-            2, 2, None)
+                               [T(""), T(""), S("")], 2, 2,
+                               2, 2, None)
         assert key == 'up'
 
         self.ktest("unselectable above scroll 1", 'up',
-            [T(""), S(""), T("\n\n\n")], 1, 0,
-            1, 1, None)
+                   [T(""), S(""), T("\n\n\n")], 1, 0,
+                   1, 1, None)
 
         self.ktest("selectable above scroll 1", 'up',
-            [S(""), S(""), T("\n\n\n")], 1, 0,
-            0, 0, None)
+                   [S(""), S(""), T("\n\n\n")], 1, 0,
+                   0, 0, None)
 
         self.ktest("selectable above too far", 'up',
-            [S(""), T(""), S(""), T("\n\n\n")], 2, 0,
-            2, 1, None)
+                   [S(""), T(""), S(""), T("\n\n\n")], 2, 0,
+                   2, 1, None)
 
         self.ktest("selectable above skip 1 scroll 1", 'up',
-            [S(""), T(""), S(""), T("\n\n\n")], 2, 1,
-            0, 0, None)
+                   [S(""), T(""), S(""), T("\n\n\n")], 2, 1,
+                   0, 0, None)
 
         self.ktest("tall selectable above scroll 2", 'up',
-            [S(""), S("\n"), S(""), T("\n\n\n")], 2, 0,
-            1, 0, None)
+                   [S(""), S("\n"), S(""), T("\n\n\n")], 2, 0,
+                   1, 0, None)
 
         self.ktest("very tall selectable above scroll 5", 'up',
-            [S(""), S("\n\n\n\n"), S(""), T("\n\n\n\n")], 2, 0,
-            1, 0, None)
+                   [S(""), S("\n\n\n\n"), S(""), T("\n\n\n\n")], 2, 0,
+                   1, 0, None)
 
         self.ktest("very tall selected scroll within 1", 'up',
-            [S(""), S("\n\n\n\n\n")], 1, -1,
-            1, 0, None)
+                   [S(""), S("\n\n\n\n\n")], 1, -1,
+                  1, 0, None)
 
         self.ktest("edit above pass cursor", 'up',
             [E("", "abc"), E("", "de")], 1, 1,

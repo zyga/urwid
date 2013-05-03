@@ -1,10 +1,13 @@
 import urwid
 
+
 def question():
     return urwid.Pile([urwid.Edit(('I say', u"What is your name?\n"))])
 
+
 def answer(name):
     return urwid.Text(('I say', u"Nice to meet you, " + name + "\n"))
+
 
 class ConversationListBox(urwid.ListBox):
     def __init__(self):
@@ -25,5 +28,5 @@ class ConversationListBox(urwid.ListBox):
         self.body.insert(pos + 1, question())
         self.focus_position = pos + 1
 
-palette = [('I say', 'default,bold', 'default'),]
+palette = [('I say', 'default,bold', 'default'), ]
 urwid.MainLoop(ConversationListBox(), palette).run()

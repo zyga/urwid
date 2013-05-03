@@ -1,11 +1,13 @@
 import urwid
 
+
 class MenuButton(urwid.Button):
     def __init__(self, caption, callback):
         super(MenuButton, self).__init__("")
         urwid.connect_signal(self, 'click', callback)
         self._w = urwid.AttrMap(urwid.SelectableIcon(
             [u'  \N{BULLET} ', caption], 2), None, 'selected')
+
 
 class SubMenu(urwid.WidgetWrap):
     def __init__(self, caption, choices):
@@ -21,6 +23,7 @@ class SubMenu(urwid.WidgetWrap):
     def open_menu(self, button):
         top.open_box(self.menu)
 
+
 class Choice(urwid.WidgetWrap):
     def __init__(self, caption):
         super(Choice, self).__init__(
@@ -33,6 +36,7 @@ class Choice(urwid.WidgetWrap):
         response_box = urwid.Filler(urwid.Pile([response, done]))
         top.open_box(urwid.AttrMap(response_box, 'options'))
 
+
 def exit_program(key):
     raise urwid.ExitMainLoop()
 
@@ -41,12 +45,12 @@ menu_top = SubMenu(u'Main Menu', [
         SubMenu(u'Accessories', [
             Choice(u'Text Editor'),
             Choice(u'Terminal'),
-        ]),
+            ]),
     ]),
     SubMenu(u'System', [
         SubMenu(u'Preferences', [
             Choice(u'Appearance'),
-        ]),
+            ]),
         Choice(u'Lock Screen'),
     ]),
 ])
@@ -65,6 +69,7 @@ focus_map = {
     'options': 'focus options',
     'line': 'focus line'}
 
+
 class HorizontalBoxes(urwid.Columns):
     def __init__(self):
         super(HorizontalBoxes, self).__init__([], dividechars=1)
@@ -73,7 +78,7 @@ class HorizontalBoxes(urwid.Columns):
         if self.contents:
             del self.contents[self.focus_position + 1:]
         self.contents.append((urwid.AttrMap(box, 'options', focus_map),
-            self.options('given', 24)))
+                              self.options('given', 24)))
         self.focus_position = len(self.contents) - 1
 
 top = HorizontalBoxes()

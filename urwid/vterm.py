@@ -1328,7 +1328,8 @@ class Terminal(Widget):
 
     signals = ['closed', 'beep', 'leds', 'title']
 
-    def __init__(self, command, env=None, main_loop=None, escape_sequence=None):
+    def __init__(self, command, env=None,
+                 main_loop=None, escape_sequence=None):
         """
         A terminal emulator within a widget.
 

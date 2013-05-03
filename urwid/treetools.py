@@ -209,7 +209,7 @@ class TreeNode(object):
 
     def get_widget(self, reload=False):
         """ Return the widget for this node."""
-        if self._widget is None or reload == True:
+        if self._widget is None or reload:
             self._widget = self.load_widget()
         return self._widget
 
@@ -241,7 +241,7 @@ class TreeNode(object):
         self.get_parent().change_child_key(self._key, key)
 
     def get_parent(self):
-        if self._parent == None and self.get_depth() > 0:
+        if self._parent is None and self.get_depth() > 0:
             self._parent = self.load_parent()
         return self._parent
 
@@ -286,7 +286,7 @@ class ParentNode(TreeNode):
 
     def get_child_keys(self, reload=False):
         """Return a possibly ordered list of child keys"""
-        if self._child_keys is None or reload == True:
+        if self._child_keys is None or reload:
             self._child_keys = self.load_child_keys()
         return self._child_keys
 
@@ -303,7 +303,7 @@ class ParentNode(TreeNode):
 
     def get_child_node(self, key, reload=False):
         """Return the child node for a given key.  Create if necessary."""
-        if key not in self._children or reload == True:
+        if key not in self._children or reload:
             self._children[key] = self.load_child_node(key)
         return self._children[key]
 

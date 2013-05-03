@@ -189,8 +189,10 @@ def nocache_bargraph_get_data(self, get_data_fn):
     self.render = nocache_widget_render_instance(self)
     self._get_data = get_data_fn
 
+
 class BarGraphError(Exception):
     pass
+
 
 class BarGraph(Widget):
     __metaclass__ = BarGraphMeta
@@ -250,7 +252,8 @@ class BarGraph(Widget):
         self.attr = []
         self.char = []
         if len(attlist) < 2:
-            raise BarGraphError("attlist must include at least background and seg1: %r" % (attlist,))
+            raise BarGraphError(
+                "attlist must include at least background and seg1: %r" % (attlist,))
         assert len(attlist) >= 2, 'must at least specify bg and fg!'
         for a in attlist:
             if type(a) != tuple:
@@ -465,7 +468,7 @@ class BarGraph(Widget):
                 o.append((end_block - rnum, row))
                 rnum = end_block
 
-        #assert 0, o
+        # assert 0, o
         return o
 
     def smooth_display(self, disp):
@@ -644,7 +647,7 @@ def calculate_bargraph_display(bardata, top, bar_widths, maxrow):
         col += width
         barnum += 1
 
-    #print repr(rows)
+    # print repr(rows)
     # build rowsets data structure
     rowsets = []
     y_count = 0
@@ -785,8 +788,7 @@ class GraphVScale(Widget):
         return c
 
 
-
-def scale_bar_values( bar, top, maxrow ):
+def scale_bar_values(bar, top, maxrow):
     """
     Return a list of bar values aliased to integer values of maxrow.
     """

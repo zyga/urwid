@@ -20,19 +20,21 @@
 # Urwid web site: http://excess.org/urwid/
 
 from urwid.widget import (Text, WidgetWrap, delegate_to_widget_mixin, BOX,
-    FLOW)
+                          FLOW)
 from urwid.canvas import CompositeCanvas
 from urwid.signals import connect_signal
 from urwid.container import Columns, Overlay
 from urwid.util import is_mouse_press
 from urwid.text_layout import calc_coords
-from urwid.signals import disconnect_signal # doctests
+from urwid.signals import disconnect_signal  # doctests
 from urwid.split_repr import python3_repr
 from urwid.decoration import WidgetDecoration
 from urwid.command_map import ACTIVATE
 
+
 class SelectableIcon(Text):
     _selectable = True
+
     def __init__(self, text, cursor_position=1):
         """
         :param text: markup for this widget; see :class:`Text` for
@@ -93,8 +95,10 @@ class SelectableIcon(Text):
         """
         return key
 
+
 class CheckBoxError(Exception):
     pass
+
 
 class CheckBox(WidgetWrap):
     def sizing(self):
@@ -103,7 +107,7 @@ class CheckBox(WidgetWrap):
     states = {
         True: SelectableIcon("[X]"),
         False: SelectableIcon("[ ]"),
-        'mixed': SelectableIcon("[#]") }
+        'mixed': SelectableIcon("[#]")}
     reserve_columns = 4
 
     # allow users of this class to listen for change events
@@ -112,7 +116,7 @@ class CheckBox(WidgetWrap):
     signals = ["change"]
 
     def __init__(self, label, state=False, has_mixed=False,
-             on_state_change=None, user_data=None):
+                 on_state_change=None, user_data=None):
         """
         :param label: markup for check box label
         :param state: False, True or "mixed"
@@ -142,7 +146,7 @@ class CheckBox(WidgetWrap):
         >>> cb.render((20,), focus=True).text # ... = b in Python 3
         [...'[X] Extra onions    ']
         """
-        self.__super.__init__(None) # self.w set by set_state below
+        self.__super.__init__(None)  # self.w set by set_state below
         self._label = Text("")
         self.has_mixed = has_mixed
         self._state = None
@@ -159,7 +163,7 @@ class CheckBox(WidgetWrap):
 
     def _repr_attrs(self):
         return dict(self.__super._repr_attrs(),
-            state=self.state)
+                    state=self.state)
 
     def set_label(self, label):
         """
@@ -237,9 +241,9 @@ class CheckBox(WidgetWrap):
             self._emit('change', state)
         self._state = state
         # rebuild the display widget with the new state
-        self._w = Columns( [
-            ('fixed', self.reserve_columns, self.states[state] ),
-            self._label ] )
+        self._w = Columns([
+            ('fixed', self.reserve_columns, self.states[state]),
+            self._label])
         self._w.focus_col = 0
 
     def get_state(self):
@@ -319,11 +323,11 @@ class RadioButton(CheckBox):
     states = {
         True: SelectableIcon("(X)"),
         False: SelectableIcon("( )"),
-        'mixed': SelectableIcon("(#)") }
+        'mixed': SelectableIcon("(#)")}
     reserve_columns = 4
 
     def __init__(self, group, label, state="first True",
-             on_state_change=None, user_data=None):
+                 on_state_change=None, user_data=None):
         """
         :param group: list for radio buttons in same group
         :param label: markup for radio button label
@@ -358,15 +362,13 @@ class RadioButton(CheckBox):
         >>> b2.render((15,), focus=True).text # ... = b in Python 3
         [...'( ) Disagree   ']
         """
-        if state=="first True":
+        if state == "first True":
             state = not group
 
         self.group = group
         self.__super.__init__(label, state, False, on_state_change,
-            user_data)
+                              user_data)
         group.append(self)
-
-
 
     def set_state(self, state, do_callback=True):
         """
@@ -409,10 +411,10 @@ class RadioButton(CheckBox):
 
         # clear the state of each other radio button
         for cb in self.group:
-            if cb is self: continue
+            if cb is self:
+                continue
             if cb._state:
                 cb.set_state(False)
-
 
     def toggle_state(self):
         """
@@ -559,7 +561,7 @@ class Button(WidgetWrap):
 
 
 class PopUpLauncher(delegate_to_widget_mixin('_original_widget'),
-        WidgetDecoration):
+                    WidgetDecoration):
     def __init__(self, original_widget):
         self.__super.__init__(original_widget)
         self._pop_up_widget = None
@@ -594,7 +596,8 @@ class PopUpLauncher(delegate_to_widget_mixin('_original_widget'),
         canv = self.__super.render(size, focus)
         if self._pop_up_widget:
             canv = CompositeCanvas(canv)
-            canv.set_pop_up(self._pop_up_widget, **self.get_pop_up_parameters())
+            canv.set_pop_up(
+                self._pop_up_widget, **self.get_pop_up_parameters())
         return canv
 
 
@@ -611,7 +614,7 @@ class PopUpTarget(WidgetDecoration):
 
     def _update_overlay(self, size, focus):
         canv = self._original_widget.render(size, focus=focus)
-        self._cache_original_canvas = canv # imperfect performance hack
+        self._cache_original_canvas = canv  # imperfect performance hack
         pop_up = canv.get_pop_up()
         if pop_up:
             left, top, (
@@ -619,8 +622,9 @@ class PopUpTarget(WidgetDecoration):
             if self._pop_up != w:
                 self._pop_up = w
                 self._current_widget = Overlay(w, self._original_widget,
-                    ('fixed left', left), overlay_width,
-                    ('fixed top', top), overlay_height)
+                                              ('fixed left',
+                                               left), overlay_width,
+                                              ('fixed top', top), overlay_height)
             else:
                 self._current_widget.set_overlay_parameters(
                     ('fixed left', left), overlay_width,
@@ -632,33 +636,35 @@ class PopUpTarget(WidgetDecoration):
     def render(self, size, focus=False):
         self._update_overlay(size, focus)
         return self._current_widget.render(size, focus=focus)
+
     def get_cursor_coords(self, size):
         self._update_overlay(size, True)
         return self._current_widget.get_cursor_coords(size)
+
     def get_pref_col(self, size):
         self._update_overlay(size, True)
         return self._current_widget.get_pref_col(size)
+
     def keypress(self, size, key):
         self._update_overlay(size, True)
         return self._current_widget.keypress(size, key)
+
     def move_cursor_to_coords(self, size, x, y):
         self._update_overlay(size, True)
         return self._current_widget.move_cursor_to_coords(size, x, y)
+
     def mouse_event(self, size, event, button, x, y, focus):
         self._update_overlay(size, focus)
         return self._current_widget.mouse_event(size, event, button, x, y, focus)
+
     def pack(self, size=None, focus=False):
         self._update_overlay(size, focus)
         return self._current_widget.pack(size)
-
-
-
-
 
 
 def _test():
     import doctest
     doctest.testmod()
 
-if __name__=='__main__':
+if __name__ == '__main__':
     _test()

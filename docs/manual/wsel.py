@@ -1,5 +1,6 @@
 import urwid
 
+
 class SelectablePudding(urwid.Widget):
     _sizing = frozenset(['flow'])
     _selectable = True
@@ -17,7 +18,7 @@ class SelectablePudding(urwid.Widget):
         if focus:
             pudding = pudding.upper()
         return urwid.TextCanvas([pudding * num_pudding],
-            maxcol=maxcol)
+                                maxcol=maxcol)
 
     def keypress(self, size, key):
         (maxcol,) = size

@@ -59,7 +59,7 @@ _target_encoding = None
 _use_dec_special = True
 
 
-def set_encoding( encoding ):
+def set_encoding(encoding):
     """
     Set the byte encoding to assume when processing strings and the
     encoding to use when converting unicode strings.
@@ -68,17 +68,16 @@ def set_encoding( encoding ):
 
     global _target_encoding, _use_dec_special
 
-    if encoding in ( 'utf-8', 'utf8', 'utf' ):
+    if encoding in ('utf-8', 'utf8', 'utf'):
         str_util.set_byte_encoding("utf8")
-            
+
         _use_dec_special = False
-    elif encoding in ( 'euc-jp' # JISX 0208 only
-            , 'euc-kr', 'euc-cn', 'euc-tw' # CNS 11643 plain 1 only
-            , 'gb2312', 'gbk', 'big5', 'cn-gb', 'uhc'
-            # these shouldn't happen, should they?
-            , 'eucjp', 'euckr', 'euccn', 'euctw', 'cncb' ):
+    elif encoding in ('euc-jp'  # JISX 0208 only
+                      , 'euc-kr', 'euc-cn', 'euc-tw'  # CNS 11643 plain 1 only
+                      , 'gb2312', 'gbk', 'big5', 'cn-gb', 'uhc'            # these shouldn't happen, should they?
+                      , 'eucjp', 'euckr', 'euccn', 'euctw', 'cncb'):
         str_util.set_byte_encoding("wide")
-            
+
         _use_dec_special = True
     else:
         str_util.set_byte_encoding("narrow")
@@ -86,11 +85,12 @@ def set_encoding( encoding ):
 
     # if encoding is valid for conversion from unicode, remember it
     _target_encoding = 'ascii'
-    try:    
+    try:
         if encoding:
             u"".encode(encoding)
             _target_encoding = encoding
-    except LookupError: pass
+    except LookupError:
+        pass
 
 
 def get_encoding_mode():
@@ -102,23 +102,23 @@ def get_encoding_mode():
     return str_util.get_byte_encoding()
 
 
-def apply_target_encoding( s ):
+def apply_target_encoding(s):
     """
     Return (encoded byte string, character set rle).
     """
     if _use_dec_special and type(s) == unicode:
         # first convert drawing characters
         try:
-            s = s.translate( escape.DEC_SPECIAL_CHARMAP )
+            s = s.translate(escape.DEC_SPECIAL_CHARMAP)
         except NotImplementedError:
             # python < 2.4 needs to do this the hard way..
-            for c, alt in zip(escape.DEC_SPECIAL_CHARS, 
-                    escape.ALT_DEC_SPECIAL_CHARS):
-                s = s.replace( c, escape.SO+alt+escape.SI )
-    
+            for c, alt in zip(escape.DEC_SPECIAL_CHARS,
+                              escape.ALT_DEC_SPECIAL_CHARS):
+                s = s.replace(c, escape.SO+alt+escape.SI)
+
     if type(s) == unicode:
-        s = s.replace( escape.SI+escape.SO, u"" ) # remove redundant shifts
-        s = s.encode( _target_encoding )
+        s = s.replace(escape.SI+escape.SO, u"")  # remove redundant shifts
+        s = s.encode(_target_encoding)
 
     assert isinstance(s, bytes)
     SO = escape.SO.encode('ascii')
@@ -132,12 +132,12 @@ def apply_target_encoding( s ):
     sout = []
     cout = []
     if sis0:
-        sout.append( sis0 )
-        cout.append( (None,len(sis0)) )
-    
-    if len(sis)==1:
+        sout.append(sis0)
+        cout.append((None, len(sis0)))
+
+    if len(sis) == 1:
         return sis0, cout
-    
+
     for sn in sis[1:]:
         assert isinstance(sn, bytes)
         assert isinstance(SI, bytes)
@@ -163,7 +163,7 @@ def apply_target_encoding( s ):
 
 ######################################################################
 # Try to set the encoding using the one detected by the locale module
-set_encoding( detected_encoding )
+set_encoding(detected_encoding)
 ######################################################################
 
 
@@ -175,10 +175,7 @@ def supports_unicode():
     return _target_encoding and _target_encoding != 'ascii'
 
 
-
-
-
-def calc_trim_text( text, start_offs, end_offs, start_col, end_col ):
+def calc_trim_text(text, start_offs, end_offs, start_col, end_col):
     """
     Calculate the result of trimming text.
     start_offs -- offset into text to treat as screen column 0
@@ -195,42 +192,40 @@ def calc_trim_text( text, start_offs, end_offs, start_col, end_col ):
     spos = start_offs
     pad_left = pad_right = 0
     if start_col > 0:
-        spos, sc = calc_text_pos( text, spos, end_offs, start_col )
+        spos, sc = calc_text_pos(text, spos, end_offs, start_col)
         if sc < start_col:
             pad_left = 1
-            spos, sc = calc_text_pos( text, start_offs, 
-                end_offs, start_col+1 )
+            spos, sc = calc_text_pos(text, start_offs,
+                                     end_offs, start_col+1)
     run = end_col - start_col - pad_left
-    pos, sc = calc_text_pos( text, spos, end_offs, run )
+    pos, sc = calc_text_pos(text, spos, end_offs, run)
     if sc < run:
         pad_right = 1
-    return ( spos, pos, pad_left, pad_right )
+    return (spos, pos, pad_left, pad_right)
 
 
-
-
-def trim_text_attr_cs( text, attr, cs, start_col, end_col ):
+def trim_text_attr_cs(text, attr, cs, start_col, end_col):
     """
     Return ( trimmed text, trimmed attr, trimmed cs ).
     """
-    spos, epos, pad_left, pad_right = calc_trim_text( 
-        text, 0, len(text), start_col, end_col )
-    attrtr = rle_subseg( attr, spos, epos )
-    cstr = rle_subseg( cs, spos, epos )
+    spos, epos, pad_left, pad_right = calc_trim_text(
+        text, 0, len(text), start_col, end_col)
+    attrtr = rle_subseg(attr, spos, epos)
+    cstr = rle_subseg(cs, spos, epos)
     if pad_left:
-        al = rle_get_at( attr, spos-1 )
-        rle_append_beginning_modify( attrtr, (al, 1) )
-        rle_append_beginning_modify( cstr, (None, 1) )
+        al = rle_get_at(attr, spos-1)
+        rle_append_beginning_modify(attrtr, (al, 1))
+        rle_append_beginning_modify(cstr, (None, 1))
     if pad_right:
-        al = rle_get_at( attr, epos )
-        rle_append_modify( attrtr, (al, 1) )
-        rle_append_modify( cstr, (None, 1) )
+        al = rle_get_at(attr, epos)
+        rle_append_modify(attrtr, (al, 1))
+        rle_append_modify(cstr, (None, 1))
 
     return (bytes().rjust(pad_left) + text[spos:epos] +
-        bytes().rjust(pad_right), attrtr, cstr)
+            bytes().rjust(pad_right), attrtr, cstr)
 
 
-def rle_get_at( rle, pos ):
+def rle_get_at(rle, pos):
     """
     Return the attribute at offset pos.
     """
@@ -244,7 +239,7 @@ def rle_get_at( rle, pos ):
     return None
 
 
-def rle_subseg( rle, start, end ):
+def rle_subseg(rle, start, end):
     """Return a sub segment of an rle list."""
     l = []
     x = 0
@@ -261,17 +256,17 @@ def rle_subseg( rle, start, end ):
             break
         if x+run > end:
             run = end-x
-        x += run    
-        l.append( (a, run) )
+        x += run
+        l.append((a, run))
     return l
 
 
-def rle_len( rle ):
+def rle_len(rle):
     """
     Return the number of characters covered by a run length
     encoded attribute list.
     """
-    
+
     run = 0
     for v in rle:
         assert type(v) == tuple, repr(rle)
@@ -279,7 +274,8 @@ def rle_len( rle ):
         run += r
     return run
 
-def rle_append_beginning_modify( rle, (a, r) ):
+
+def rle_append_beginning_modify(rle, (a, r)):
     """
     Append (a, r) to BEGINNING of rle.
     Merge with first run when possible
@@ -288,28 +284,29 @@ def rle_append_beginning_modify( rle, (a, r) ):
     """
     if not rle:
         rle[:] = [(a, r)]
-    else:    
+    else:
         al, run = rle[0]
         if a == al:
-            rle[0] = (a,run+r)
+            rle[0] = (a, run+r)
         else:
             rle[0:0] = [(al, r)]
-            
-            
-def rle_append_modify( rle, (a, r) ):
+
+
+def rle_append_modify(rle, (a, r)):
     """
     Append (a,r) to the rle list rle.
     Merge with last run when possible.
-    
+
     MODIFIES rle parameter contents. Returns None.
     """
     if not rle or rle[-1][0] != a:
-        rle.append( (a,r) )
+        rle.append((a, r))
         return
-    la,lr = rle[-1]
+    la, lr = rle[-1]
     rle[-1] = (a, lr+r)
 
-def rle_join_modify( rle, rle2 ):
+
+def rle_join_modify(rle, rle2):
     """
     Append attribute list rle2 to rle.
     Merge last run of rle with first run of rle2 when possible.
@@ -320,8 +317,9 @@ def rle_join_modify( rle, rle2 ):
         return
     rle_append_modify(rle, rle2[0])
     rle += rle2[1:]
-        
-def rle_product( rle1, rle2 ):
+
+
+def rle_product(rle1, rle2):
     """
     Merge the runs of rle1 and rle2 like this:
     eg.
@@ -331,39 +329,42 @@ def rle_product( rle1, rle2 ):
 
     rle1 and rle2 are assumed to cover the same total run.
     """
-    i1 = i2 = 1 # rle1, rle2 indexes
-    if not rle1 or not rle2: return []
+    i1 = i2 = 1  # rle1, rle2 indexes
+    if not rle1 or not rle2:
+        return []
     a1, r1 = rle1[0]
     a2, r2 = rle2[0]
-    
+
     l = []
     while r1 and r2:
         r = min(r1, r2)
-        rle_append_modify( l, ((a1,a2),r) )
+        rle_append_modify(l, ((a1, a2), r))
         r1 -= r
-        if r1 == 0 and i1< len(rle1):
+        if r1 == 0 and i1 < len(rle1):
             a1, r1 = rle1[i1]
             i1 += 1
         r2 -= r
-        if r2 == 0 and i2< len(rle2):
+        if r2 == 0 and i2 < len(rle2):
             a2, r2 = rle2[i2]
             i2 += 1
-    return l    
+    return l
 
 
-def rle_factor( rle ):
+def rle_factor(rle):
     """
     Inverse of rle_product.
     """
     rle1 = []
     rle2 = []
     for (a1, a2), r in rle:
-        rle_append_modify( rle1, (a1, r) )
-        rle_append_modify( rle2, (a2, r) )
+        rle_append_modify(rle1, (a1, r))
+        rle_append_modify(rle2, (a2, r))
     return rle1, rle2
 
 
-class TagMarkupException(Exception): pass
+class TagMarkupException(Exception):
+    pass
+
 
 def decompose_tagmarkup(tm):
     """Return (text string, attribute list) for tagmarkup passed."""
@@ -377,18 +378,19 @@ def decompose_tagmarkup(tm):
 
     return text, al
 
-def _tagmarkup_recurse( tm, attr ):
+
+def _tagmarkup_recurse(tm, attr):
     """Return (text list, attribute list) for tagmarkup passed.
-    
+
     tm -- tagmarkup
     attr -- current attribute or None"""
-    
+
     if type(tm) == list:
         # for lists recurse to process each subelement
-        rtl = [] 
+        rtl = []
         ral = []
         for element in tm:
-            tl, al = _tagmarkup_recurse( element, attr )
+            tl, al = _tagmarkup_recurse(element, attr)
             if ral:
                 # merge attributes when possible
                 last_attr, last_run = ral[-1]
@@ -399,29 +401,29 @@ def _tagmarkup_recurse( tm, attr ):
             rtl += tl
             ral += al
         return rtl, ral
-        
+
     if type(tm) == tuple:
         # tuples mark a new attribute boundary
-        if len(tm) != 2: 
-            raise TagMarkupException, "Tuples must be in the form (attribute, tagmarkup): %r" % (tm,)
+        if len(tm) != 2:
+            raise TagMarkupException("Tuples must be in the form (attribute, tagmarkup): %r" % (
+                tm,))
 
         attr, element = tm
-        return _tagmarkup_recurse( element, attr )
-    
-    if not isinstance(tm,(basestring, bytes)):
-        raise TagMarkupException, "Invalid markup element: %r" % tm
-    
+        return _tagmarkup_recurse(element, attr)
+
+    if not isinstance(tm, (basestring, bytes)):
+        raise TagMarkupException("Invalid markup element: %r" % tm)
+
     # text
     return [tm], [(attr, len(tm))]
 
 
+def is_mouse_event(ev):
+    return type(ev) == tuple and len(ev) == 4 and ev[0].find("mouse") >= 0
 
-def is_mouse_event( ev ):
-    return type(ev) == tuple and len(ev)==4 and ev[0].find("mouse")>=0
 
-def is_mouse_press( ev ):
-    return ev.find("press")>=0
-
+def is_mouse_press(ev):
+    return ev.find("press") >= 0
 
 
 class MetaSuper(type):
@@ -429,15 +431,15 @@ class MetaSuper(type):
     def __init__(cls, name, bases, d):
         super(MetaSuper, cls).__init__(name, bases, d)
         if hasattr(cls, "_%s__super" % name):
-            raise AttributeError, "Class has same name as one of its super classes"
+            raise AttributeError(
+                "Class has same name as one of its super classes")
         setattr(cls, "_%s__super" % name, super(cls))
 
 
-    
 def int_scale(val, val_range, out_range):
     """
-    Scale val in the range [0, val_range-1] to an integer in the range 
-    [0, out_range-1].  This implementaton uses the "round-half-up" rounding 
+    Scale val in the range [0, val_range-1] to an integer in the range
+    [0, out_range-1].  This implementaton uses the "round-half-up" rounding
     method.
 
     >>> "%x" % int_scale(0x7, 0x10, 0x10000)
@@ -453,4 +455,3 @@ def int_scale(val, val_range, out_range):
     dem = ((val_range-1) * 2)
     # if num % dem == 0 then we are exactly half-way and have rounded up.
     return num // dem
-

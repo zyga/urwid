@@ -1,5 +1,6 @@
 import urwid
 
+
 class QuestionnaireItem(urwid.WidgetWrap):
     def __init__(self):
         self.options = []

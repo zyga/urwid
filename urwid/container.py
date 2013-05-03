@@ -23,14 +23,14 @@ from itertools import chain, repeat
 
 from urwid.util import is_mouse_press
 from urwid.widget import (Widget, Divider, FLOW, FIXED, PACK, BOX, WidgetWrap,
-    GIVEN, WEIGHT, LEFT, RIGHT, RELATIVE, TOP, BOTTOM, CLIP, RELATIVE_100)
+                          GIVEN, WEIGHT, LEFT, RIGHT, RELATIVE, TOP, BOTTOM, CLIP, RELATIVE_100)
 from urwid.decoration import (Padding, Filler, calculate_left_right_padding,
-    calculate_top_bottom_filler, normalize_align, normalize_width,
-    normalize_valign, normalize_height, simplify_align, simplify_width,
-    simplify_valign, simplify_height)
+                              calculate_top_bottom_filler, normalize_align, normalize_width,
+                              normalize_valign, normalize_height, simplify_align, simplify_width,
+                              simplify_valign, simplify_height)
 from urwid.monitored_list import MonitoredList, MonitoredFocusList
 from urwid.canvas import (CompositeCanvas, CanvasOverlay, CanvasCombine,
-    SolidCanvas, CanvasJoin)
+                          SolidCanvas, CanvasJoin)
 
 
 class WidgetContainerMixin(object):
@@ -82,7 +82,7 @@ class WidgetContainerMixin(object):
         w = self
         for p in positions:
             if p != w.focus_position:
-                w.focus_position = p # modifies w.focus
+                w.focus_position = p  # modifies w.focus
             w = w.focus.base_widget
 
     def get_focus_widgets(self):
@@ -102,6 +102,7 @@ class WidgetContainerMixin(object):
             if w is None:
                 return out
             out.append(w)
+
 
 class WidgetContainerListContentsMixin(object):
     """
@@ -126,11 +127,12 @@ class WidgetContainerListContentsMixin(object):
 class GridFlowError(Exception):
     pass
 
+
 class GridFlow(WidgetWrap, WidgetContainerMixin, WidgetContainerListContentsMixin):
     """
     The GridFlow widget is a flow widget that renders all the widgets it
     contains the same width and it arranges them from left to right and top to
-    bottom. 
+    bottom.
     """
     def sizing(self):
         return frozenset([FLOW])
@@ -174,10 +176,12 @@ class GridFlow(WidgetWrap, WidgetContainerMixin, WidgetContainerListContentsMixi
 
     def _get_cells(self):
         ml = MonitoredList(w for w, t in self.contents)
+
         def user_modified():
             self._set_cells(ml)
         ml.set_modified_callback(user_modified)
         return ml
+
     def _set_cells(self, widgets):
         focus_position = self.focus_position
         self.contents = [
@@ -194,6 +198,7 @@ class GridFlow(WidgetWrap, WidgetContainerMixin, WidgetContainerListContentsMixi
 
     def _get_cell_width(self):
         return self._cell_width
+
     def _set_cell_width(self, width):
         focus_position = self.focus_position
         self.contents = [
@@ -207,6 +212,7 @@ class GridFlow(WidgetWrap, WidgetContainerMixin, WidgetContainerListContentsMixi
 
     def _get_contents(self):
         return self._contents
+
     def _set_contents(self, c):
         self._contents[:] = c
     contents = property(_get_contents, _set_contents, doc="""
@@ -261,7 +267,7 @@ class GridFlow(WidgetWrap, WidgetContainerMixin, WidgetContainerListContentsMixi
             return None
         return self.contents[self.focus_position][0]
     focus = property(get_focus,
-        doc="the child widget in focus or None when GridFlow is empty")
+                     doc="the child widget in focus or None when GridFlow is empty")
 
     def _set_focus_cell(self, cell):
         for i, (w, options) in enumerate(self.contents):
@@ -284,8 +290,9 @@ class GridFlow(WidgetWrap, WidgetContainerMixin, WidgetContainerListContentsMixi
         empty.
         """
         if not self.contents:
-            raise IndexError, "No focus_position, GridFlow is empty"
+            raise IndexError("No focus_position, GridFlow is empty")
         return self.contents.focus
+
     def _set_focus_position(self, position):
         """
         Set the widget in focus.
@@ -296,7 +303,8 @@ class GridFlow(WidgetWrap, WidgetContainerMixin, WidgetContainerListContentsMixi
             if position < 0 or position >= len(self.contents):
                 raise IndexError
         except (TypeError, IndexError):
-            raise IndexError, "No GridFlow child widget at position %s" % (position,)
+            raise IndexError("No GridFlow child widget at position %s" % (
+                position,))
         self.contents.focus = position
     focus_position = property(_get_focus_position, _set_focus_position, doc="""
         index of child widget in focus. Raises :exc:`IndexError` if read when
@@ -352,12 +360,12 @@ class GridFlow(WidgetWrap, WidgetContainerMixin, WidgetContainerListContentsMixi
                 c.focus_position = len(c.contents) - 1
                 p.focus_position = len(p.contents) - 1
             used_space = (sum(x[1][1] for x in c.contents) +
-                self.h_sep * len(c.contents))
+                          self.h_sep * len(c.contents))
             if width_amount > maxcol:
                 # special case: display is too narrow for the given
                 # width so we remove the Columns for better behaviour
                 # FIXME: determine why this is necessary
-                pad.original_widget=w
+                pad.original_widget = w
             pad.width = used_space - self.h_sep
 
         return p
@@ -386,7 +394,6 @@ class GridFlow(WidgetWrap, WidgetContainerMixin, WidgetContainerListContentsMixi
         # pad.first_position was set by generate_display_widget() above
         self.focus_position = pile_focus.first_position + col_focus_position
 
-
     def keypress(self, size, key):
         """
         Pass keypress to display widget for handling.
@@ -402,7 +409,7 @@ class GridFlow(WidgetWrap, WidgetContainerMixin, WidgetContainerListContentsMixi
         self.get_display_widget(size)
         return self.__super.rows(size, focus=focus)
 
-    def render(self, size, focus=False ):
+    def render(self, size, focus=False):
         self.get_display_widget(size)
         return self.__super.render(size, focus)
 
@@ -422,7 +429,7 @@ class GridFlow(WidgetWrap, WidgetContainerMixin, WidgetContainerListContentsMixi
         self.get_display_widget(size)
         self.__super.mouse_event(size, event, button, col, row, focus)
         self._set_focus_from_display_widget()
-        return True # at a minimum we adjusted our focus
+        return True  # at a minimum we adjusted our focus
 
     def get_pref_col(self, size):
         """Return pref col from display widget."""
@@ -430,9 +437,9 @@ class GridFlow(WidgetWrap, WidgetContainerMixin, WidgetContainerListContentsMixi
         return self.__super.get_pref_col(size)
 
 
-
 class OverlayError(Exception):
     pass
+
 
 class Overlay(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
     """
@@ -446,7 +453,7 @@ class Overlay(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
         TOP, None, RELATIVE, 100, None, 0, 0)
 
     def __init__(self, top_w, bottom_w, align, width, valign, height,
-            min_width=None, min_height=None, left=0, right=0, top=0, bottom=0):
+                 min_width=None, min_height=None, left=0, right=0, top=0, bottom=0):
         """
         :param top_w: a flow, box or fixed widget to overlay "on top"
         :type top_w: Widget
@@ -499,11 +506,11 @@ class Overlay(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
         self.bottom_w = bottom_w
 
         self.set_overlay_parameters(align, width, valign, height,
-            min_width, min_height, left, right, top, bottom)
+                                    min_width, min_height, left, right, top, bottom)
 
     def options(self, align_type, align_amount, width_type, width_amount,
-            valign_type, valign_amount, height_type, height_amount,
-            min_width=None, min_height=None, left=0, right=0, top=0, bottom=0):
+                valign_type, valign_amount, height_type, height_amount,
+                min_width=None, min_height=None, left=0, right=0, top=0, bottom=0):
         """
         Return a new options tuple for use in this Overlay's .contents mapping.
 
@@ -514,11 +521,11 @@ class Overlay(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
         """
 
         return (align_type, align_amount, width_type, width_amount,
-            min_width, left, right, valign_type, valign_amount,
-            height_type, height_amount, min_height, top, bottom)
+                min_width, left, right, valign_type, valign_amount,
+                height_type, height_amount, min_height, top, bottom)
 
     def set_overlay_parameters(self, align, width, valign, height,
-            min_width=None, min_height=None, left=0, right=0, top=0, bottom=0):
+                               min_width=None, min_height=None, left=0, right=0, top=0, bottom=0):
         """
         Adjust the overlay size and position parameters.
 
@@ -555,7 +562,7 @@ class Overlay(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
                 top = height[1]
                 height = RELATIVE_100
 
-        if width is None: # more obsolete values accepted
+        if width is None:  # more obsolete values accepted
             width = PACK
         if height is None:
             height = PACK
@@ -581,7 +588,7 @@ class Overlay(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
     def keypress(self, size, key):
         """Pass keypress to top_w."""
         return self.top_w.keypress(self.top_w_size(size,
-            *self.calculate_padding_filler(size, True)), key)
+                                                   *self.calculate_padding_filler(size, True)), key)
 
     def _get_focus(self):
         """
@@ -589,13 +596,14 @@ class Overlay(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
         """
         return self.top_w
     focus = property(_get_focus,
-        doc="the top widget in this overlay is always in focus")
+                     doc="the top widget in this overlay is always in focus")
 
     def _get_focus_position(self):
         """
         Return the top widget position (currently always 1).
         """
         return 1
+
     def _set_focus_position(self, position):
         """
         Set the widget in focus.  Currently only position 0 is accepted.
@@ -603,10 +611,10 @@ class Overlay(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
         position -- index of child widget to be made focus
         """
         if position != 1:
-            raise IndexError, ("Overlay widget focus_position currently "
-                "must always be set to 1, not %s" % (position,))
+            raise IndexError("Overlay widget focus_position currently "
+                             "must always be set to 1, not %s" % (position,))
     focus_position = property(_get_focus_position, _set_focus_position,
-        doc="index of child widget in focus, currently always 1")
+                              doc="index of child widget in focus, currently always 1")
 
     def _contents(self):
         class OverlayContents(object):
@@ -615,6 +623,7 @@ class Overlay(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
             __getitem__ = self._contents__getitem__
             __setitem__ = self._contents__setitem__
         return OverlayContents()
+
     def _contents__getitem__(self, index):
         if index == 0:
             return (self.bottom_w, self._DEFAULT_BOTTOM_OPTIONS)
@@ -627,7 +636,8 @@ class Overlay(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
                 self.height_type, self.height_amount,
                 self.min_height, self.top, self.bottom))
         raise IndexError("Overlay.contents has no position %r"
-            % (index,))
+                         % (index,))
+
     def _contents__setitem__(self, index, value):
         try:
             value_w, value_options = value
@@ -636,17 +646,17 @@ class Overlay(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
         if index == 0:
             if value_options != self._DEFAULT_BOTTOM_OPTIONS:
                 raise OverlayError("bottom_options must be set to "
-                    "%r" % (self._DEFAULT_BOTTOM_OPTIONS,))
+                                   "%r" % (self._DEFAULT_BOTTOM_OPTIONS,))
             self.bottom_w = value_w
         elif index == 1:
             try:
                 (align_type, align_amount, width_type, width_amount,
                     min_width, left, right, valign_type, valign_amount,
                     height_type, height_amount, min_height, top, bottom,
-                    ) = value_options
+                 ) = value_options
             except (ValueError, TypeError):
                 raise OverlayError("top_options is invalid: %r"
-                    % (value_options,))
+                                   % (value_options,))
             # normalize first, this is where errors are raised
             align_type, align_amount = normalize_align(
                 simplify_align(align_type, align_amount), OverlayError)
@@ -672,7 +682,7 @@ class Overlay(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
             self.min_height = min_height
         else:
             raise IndexError("Overlay.contents has no position %r"
-                % (index,))
+                             % (index,))
         self._invalidate()
     contents = property(_contents, doc="""
         a list-like object similar to::
@@ -702,9 +712,9 @@ class Overlay(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
             return None
         (maxcol, maxrow) = size
         left, right, top, bottom = self.calculate_padding_filler(size,
-            True)
+                                                                 True)
         x, y = self.top_w.get_cursor_coords(
-            (maxcol-left-right, maxrow-top-bottom) )
+            (maxcol-left-right, maxrow-top-bottom))
         if y >= maxrow:  # required??
             y = maxrow-1
         return x+left, y+top
@@ -714,38 +724,38 @@ class Overlay(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
         (maxcol, maxrow) = size
         height = None
         if self.width_type == PACK:
-            width, height = self.top_w.pack((),focus=focus)
+            width, height = self.top_w.pack((), focus=focus)
             if not height:
                 raise OverlayError("fixed widget must have a height")
             left, right = calculate_left_right_padding(maxcol,
-                self.align_type, self.align_amount, CLIP, width,
-                None, self.left, self.right)
+                                                       self.align_type, self.align_amount, CLIP, width,
+                                                       None, self.left, self.right)
         else:
             left, right = calculate_left_right_padding(maxcol,
-                self.align_type, self.align_amount,
-                self.width_type, self.width_amount,
-                self.min_width, self.left, self.right)
+                                                       self.align_type, self.align_amount,
+                                                       self.width_type, self.width_amount,
+                                                       self.min_width, self.left, self.right)
 
         if height:
             # top_w is a fixed widget
             top, bottom = calculate_top_bottom_filler(maxrow,
-                self.valign_type, self.valign_amount,
-                GIVEN, height, None, self.top, self.bottom)
+                                                      self.valign_type, self.valign_amount,
+                                                      GIVEN, height, None, self.top, self.bottom)
             if maxrow-top-bottom < height:
                 bottom = maxrow-top-height
         elif self.height_type == PACK:
             # top_w is a flow widget
-            height = self.top_w.rows((maxcol,),focus=focus)
-            top, bottom =  calculate_top_bottom_filler(maxrow,
-                self.valign_type, self.valign_amount,
-                GIVEN, height, None, self.top, self.bottom)
-            if height > maxrow: # flow widget rendered too large
+            height = self.top_w.rows((maxcol,), focus=focus)
+            top, bottom = calculate_top_bottom_filler(maxrow,
+                                                      self.valign_type, self.valign_amount,
+                                                      GIVEN, height, None, self.top, self.bottom)
+            if height > maxrow:  # flow widget rendered too large
                 bottom = maxrow - height
         else:
             top, bottom = calculate_top_bottom_filler(maxrow,
-                self.valign_type, self.valign_amount,
-                self.height_type, self.height_amount,
-                self.min_height, self.top, self.bottom)
+                                                      self.valign_type, self.valign_amount,
+                                                      self.height_type, self.height_amount,
+                                                      self.min_height, self.top, self.bottom)
         return left, right, top, bottom
 
     def top_w_size(self, size, left, right, top, bottom):
@@ -759,11 +769,10 @@ class Overlay(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
             return (maxcol-left-right,)
         return (maxcol-left-right, maxrow-top-bottom)
 
-
     def render(self, size, focus=False):
         """Render top_w overlayed on bottom_w."""
         left, right, top, bottom = self.calculate_padding_filler(size,
-            focus)
+                                                                 focus)
         bottom_c = self.bottom_w.render(size)
         if not bottom_c.cols() or not bottom_c.rows():
             return CompositeCanvas(bottom_c)
@@ -778,26 +787,26 @@ class Overlay(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
 
         return CanvasOverlay(top_c, bottom_c, left, top)
 
-
     def mouse_event(self, size, event, button, col, row, focus):
         """Pass event to top_w, ignore if outside of top_w."""
         if not hasattr(self.top_w, 'mouse_event'):
             return False
 
         left, right, top, bottom = self.calculate_padding_filler(size,
-            focus)
+                                                                 focus)
         maxcol, maxrow = size
-        if ( col<left or col>=maxcol-right or
-            row<top or row>=maxrow-bottom ):
+        if (col < left or col >= maxcol-right or
+                row < top or row >= maxrow-bottom):
             return False
 
         return self.top_w.mouse_event(
             self.top_w_size(size, left, right, top, bottom),
-            event, button, col-left, row-top, focus )
+            event, button, col-left, row-top, focus)
 
 
 class FrameError(Exception):
     pass
+
 
 class Frame(Widget, WidgetContainerMixin):
     """
@@ -833,6 +842,7 @@ class Frame(Widget, WidgetContainerMixin):
 
     def get_header(self):
         return self._header
+
     def set_header(self, header):
         self._header = header
         if header is None and self.focus_part == 'header':
@@ -842,6 +852,7 @@ class Frame(Widget, WidgetContainerMixin):
 
     def get_body(self):
         return self._body
+
     def set_body(self, body):
         self._body = body
         self._invalidate()
@@ -849,6 +860,7 @@ class Frame(Widget, WidgetContainerMixin):
 
     def get_footer(self):
         return self._footer
+
     def set_footer(self, footer):
         self._footer = footer
         if footer is None and self.focus_part == 'footer':
@@ -867,10 +879,10 @@ class Frame(Widget, WidgetContainerMixin):
         :type part: str
         """
         if part not in ('header', 'footer', 'body'):
-            raise IndexError, 'Invalid position for Frame: %s' % (part,)
+            raise IndexError('Invalid position for Frame: %s' % (part,))
         if (part == 'header' and self._header is None) or (
                 part == 'footer' and self._footer is None):
-            raise IndexError, 'This Frame has no %s' % (part,)
+            raise IndexError('This Frame has no %s' % (part,))
         self.focus_part = part
         self._invalidate()
 
@@ -891,7 +903,7 @@ class Frame(Widget, WidgetContainerMixin):
             'header': self._header,
             'footer': self._footer,
             'body': self._body
-            }[self.focus_part]
+        }[self.focus_part]
     focus = property(_get_focus, doc="""
         child :class:`Widget` in focus: the body, header or footer widget.
         This is a read-only property.""")
@@ -905,10 +917,13 @@ class Frame(Widget, WidgetContainerMixin):
         class FrameContents(object):
             def __len__(inner_self):
                 return len(inner_self.keys())
+
             def items(inner_self):
                 return [(k, inner_self[k]) for k in inner_self.keys()]
+
             def values(inner_self):
                 return [inner_self[k] for k in inner_self.keys()]
+
             def update(inner_self, E=None, **F):
                 if E:
                     keys = getattr(E, 'keys', None)
@@ -925,6 +940,7 @@ class Frame(Widget, WidgetContainerMixin):
             __setitem__ = self._contents__setitem__
             __delitem__ = self._contents__delitem__
         return FrameContents()
+
     def _contents_keys(self):
         keys = ['body']
         if self._header:
@@ -932,6 +948,7 @@ class Frame(Widget, WidgetContainerMixin):
         if self._footer:
             keys.append('footer')
         return keys
+
     def _contents__getitem__(self, key):
         if key == 'body':
             return (self._body, None)
@@ -940,6 +957,7 @@ class Frame(Widget, WidgetContainerMixin):
         if key == 'footer' and self._footer:
             return (self._footer, None)
         raise KeyError("Frame.contents has no key: %r" % (key,))
+
     def _contents__setitem__(self, key, value):
         if key not in ('body', 'header', 'footer'):
             raise KeyError("Frame.contents has no key: %r" % (key,))
@@ -955,6 +973,7 @@ class Frame(Widget, WidgetContainerMixin):
             self.footer = value_w
         else:
             self.header = value_w
+
     def _contents__delitem__(self, key):
         if key not in ('header', 'footer'):
             raise KeyError("Frame.contents can't remove key: %r" % (key,))
@@ -1011,46 +1030,45 @@ class Frame(Widget, WidgetContainerMixin):
 
         if self.header:
             hrows = self.header.rows((maxcol,),
-                self.focus_part=='header' and focus)
+                self.focus_part == 'header' and focus)
 
         if self.footer:
             frows = self.footer.rows((maxcol,),
-                self.focus_part=='footer' and focus)
+                self.focus_part == 'footer' and focus)
 
         remaining = maxrow
 
         if self.focus_part == 'footer':
             if frows >= remaining:
-                return (0, remaining),(hrows, frows)
+                return (0, remaining), (hrows, frows)
 
             remaining -= frows
             if hrows >= remaining:
-                return (remaining, frows),(hrows, frows)
+                return (remaining, frows), (hrows, frows)
 
         elif self.focus_part == 'header':
             if hrows >= maxrow:
-                return (remaining, 0),(hrows, frows)
+                return (remaining, 0), (hrows, frows)
 
             remaining -= hrows
             if frows >= remaining:
-                return (hrows, remaining),(hrows, frows)
+                return (hrows, remaining), (hrows, frows)
 
         elif hrows + frows >= remaining:
             # self.focus_part == 'body'
             rless1 = max(0, remaining-1)
             if frows >= remaining-1:
-                return (0, rless1),(hrows, frows)
+                return (0, rless1), (hrows, frows)
 
             remaining -= frows
             rless1 = max(0, remaining-1)
-            return (rless1,frows),(hrows, frows)
+            return (rless1, frows), (hrows, frows)
 
-        return (hrows, frows),(hrows, frows)
-
+        return (hrows, frows), (hrows, frows)
 
     def render(self, size, focus=False):
         (maxcol, maxrow) = size
-        (htrim, ftrim),(hrows, frows) = self.frame_top_bottom(
+        (htrim, ftrim), (hrows, frows) = self.frame_top_bottom(
             (maxcol, maxrow), focus)
 
         combinelist = []
@@ -1093,7 +1111,6 @@ class Frame(Widget, WidgetContainerMixin):
 
         return CanvasCombine(combinelist)
 
-
     def keypress(self, size, key):
         """Pass keypress to widget in focus."""
         (maxcol, maxrow) = size
@@ -1101,11 +1118,11 @@ class Frame(Widget, WidgetContainerMixin):
         if self.focus_part == 'header' and self.header is not None:
             if not self.header.selectable():
                 return key
-            return self.header.keypress((maxcol,),key)
+            return self.header.keypress((maxcol,), key)
         if self.focus_part == 'footer' and self.footer is not None:
             if not self.footer.selectable():
                 return key
-            return self.footer.keypress((maxcol,),key)
+            return self.footer.keypress((maxcol,), key)
         if self.focus_part != 'body':
             return key
         remaining = maxrow
@@ -1113,12 +1130,12 @@ class Frame(Widget, WidgetContainerMixin):
             remaining -= self.header.rows((maxcol,))
         if self.footer is not None:
             remaining -= self.footer.rows((maxcol,))
-        if remaining <= 0: return key
+        if remaining <= 0:
+            return key
 
         if not self.body.selectable():
             return key
-        return self.body.keypress( (maxcol, remaining), key )
-
+        return self.body.keypress((maxcol, remaining), key)
 
     def mouse_event(self, size, event, button, col, row, focus):
         """
@@ -1126,39 +1143,39 @@ class Frame(Widget, WidgetContainerMixin):
         Focus may be changed on button 1 press.
         """
         (maxcol, maxrow) = size
-        (htrim, ftrim),(hrows, frows) = self.frame_top_bottom(
+        (htrim, ftrim), (hrows, frows) = self.frame_top_bottom(
             (maxcol, maxrow), focus)
 
-        if row < htrim: # within header
+        if row < htrim:  # within header
             focus = focus and self.focus_part == 'header'
-            if is_mouse_press(event) and button==1:
+            if is_mouse_press(event) and button == 1:
                 if self.header.selectable():
                     self.set_focus('header')
             if not hasattr(self.header, 'mouse_event'):
                 return False
-            return self.header.mouse_event( (maxcol,), event,
-                button, col, row, focus )
+            return self.header.mouse_event((maxcol,), event,
+                button, col, row, focus)
 
-        if row >= maxrow-ftrim: # within footer
+        if row >= maxrow-ftrim:  # within footer
             focus = focus and self.focus_part == 'footer'
-            if is_mouse_press(event) and button==1:
+            if is_mouse_press(event) and button == 1:
                 if self.footer.selectable():
                     self.set_focus('footer')
             if not hasattr(self.footer, 'mouse_event'):
                 return False
-            return self.footer.mouse_event( (maxcol,), event,
-                button, col, row-maxrow+frows, focus )
+            return self.footer.mouse_event((maxcol,), event,
+                button, col, row-maxrow+frows, focus)
 
         # within body
         focus = focus and self.focus_part == 'body'
-        if is_mouse_press(event) and button==1:
+        if is_mouse_press(event) and button == 1:
             if self.body.selectable():
                 self.set_focus('body')
 
         if not hasattr(self.body, 'mouse_event'):
             return False
-        return self.body.mouse_event( (maxcol, maxrow-htrim-ftrim),
-            event, button, col, row-htrim, focus )
+        return self.body.mouse_event((maxcol, maxrow-htrim-ftrim),
+            event, button, col, row-htrim, focus)
 
     def __iter__(self):
         """
@@ -1183,6 +1200,7 @@ class Frame(Widget, WidgetContainerMixin):
 
 class PileError(Exception):
     pass
+
 
 class Pile(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
     """
@@ -1233,7 +1251,7 @@ class Pile(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
             elif len(w) == 2:
                 height, w = w
                 self.contents.append((w, (GIVEN, height)))
-            elif w[0] == FIXED: # backwards compatibility
+            elif w[0] == FIXED:  # backwards compatibility
                 _ignore, height, w = w
                 self.contents.append((w, (GIVEN, height)))
             elif w[0] == WEIGHT:
@@ -1261,10 +1279,12 @@ class Pile(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
 
     def _get_widget_list(self):
         ml = MonitoredList(w for w, t in self.contents)
+
         def user_modified():
             self._set_widget_list(ml)
         ml.set_modified_callback(user_modified)
         return ml
+
     def _set_widget_list(self, widgets):
         focus_position = self.focus_position
         self.contents = [
@@ -1285,10 +1305,12 @@ class Pile(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
             # return the old item type names
             ({GIVEN: FIXED, PACK: FLOW}.get(f, f), height)
             for w, (f, height) in self.contents)
+
         def user_modified():
             self._set_item_types(ml)
         ml.set_modified_callback(user_modified)
         return ml
+
     def _set_item_types(self, item_types):
         focus_position = self.focus_position
         self.contents = [
@@ -1306,6 +1328,7 @@ class Pile(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
 
     def _get_contents(self):
         return self._contents
+
     def _set_contents(self, c):
         self._contents[:] = c
     contents = property(_get_contents, _set_contents, doc="""
@@ -1403,8 +1426,9 @@ class Pile(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
         empty.
         """
         if not self.contents:
-            raise IndexError, "No focus_position, Pile is empty"
+            raise IndexError("No focus_position, Pile is empty")
         return self.contents.focus
+
     def _set_focus_position(self, position):
         """
         Set the widget in focus.
@@ -1415,7 +1439,8 @@ class Pile(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
             if position < 0 or position >= len(self.contents):
                 raise IndexError
         except (TypeError, IndexError):
-            raise IndexError, "No Pile child widget at position %s" % (position,)
+            raise IndexError("No Pile child widget at position %s" % (
+                position,))
         self.contents.focus = position
     focus_position = property(_get_focus_position, _set_focus_position, doc="""
         index of child widget in focus. Raises :exc:`IndexError` if read when
@@ -1482,7 +1507,8 @@ class Pile(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
                 wtotal += height
 
         if wtotal == 0:
-            raise PileError, "No weighted widgets found for Pile treated as a box widget"
+            raise PileError(
+                "No weighted widgets found for Pile treated as a box widget")
 
         if remaining < 0:
             remaining = 0
@@ -1506,13 +1532,13 @@ class Pile(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
             canv = None
             if f == GIVEN:
                 canv = w.render((maxcol, height), focus=focus and item_focus)
-            elif f == PACK or len(size)==1:
+            elif f == PACK or len(size) == 1:
                 canv = w.render((maxcol,), focus=focus and item_focus)
             else:
                 if item_rows is None:
                     item_rows = self.get_item_rows(size, focus)
                 rows = item_rows[i]
-                if rows>0:
+                if rows > 0:
                     canv = w.render((maxcol, rows), focus=focus and item_focus)
             if canv:
                 combinelist.append((canv, i, item_focus))
@@ -1550,7 +1576,7 @@ class Pile(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
 
         if coords is None:
             return None
-        x,y = coords
+        x, y = coords
         if i > 0:
             if item_rows is None:
                 item_rows = self.get_item_rows(size, focus=True)
@@ -1558,10 +1584,10 @@ class Pile(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
                 y += r
         return x, y
 
-    def rows(self, size, focus=False ):
+    def rows(self, size, focus=False):
         return sum(self.get_item_rows(size, focus))
 
-    def keypress(self, size, key ):
+    def keypress(self, size, key):
         """Pass the keypress to the widget in focus.
         Unhandled 'up' and 'down' keys may cause a focus change."""
         if not self.contents:
@@ -1579,8 +1605,8 @@ class Pile(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
                 return key
 
         if self._command_map[key] == 'cursor up':
-            candidates = range(i-1, -1, -1) # count backwards to 0
-        else: # self._command_map[key] == 'cursor down'
+            candidates = range(i-1, -1, -1)  # count backwards to 0
+        else:  # self._command_map[key] == 'cursor down'
             candidates = range(i+1, len(self.contents))
 
         if not item_rows:
@@ -1598,7 +1624,7 @@ class Pile(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
             rows = item_rows[j]
             if self._command_map[key] == 'cursor up':
                 rowlist = range(rows-1, -1, -1)
-            else: # self._command_map[key] == 'cursor down'
+            else:  # self._command_map[key] == 'cursor down'
                 rowlist = range(rows)
             for row in rowlist:
                 tsize = self.get_item_size(size, j, True, item_rows)
@@ -1625,8 +1651,8 @@ class Pile(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
         """Capture pref col and set new focus."""
         self.pref_col = col
 
-        #FIXME guessing focus==True
-        focus=True
+        # FIXME guessing focus==True
+        focus = True
         wrow = 0
         item_rows = self.get_item_rows(size, focus)
         for i, (r, w) in enumerate(zip(item_rows,
@@ -1673,7 +1699,6 @@ class Pile(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
         tsize = self.get_item_size(size, i, focus, item_rows)
         return w.mouse_event(tsize, event, button, col, row-wrow,
             focus)
-
 
 
 class ColumnsError(Exception):
@@ -1733,14 +1758,14 @@ class Columns(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
             w = original
             if not isinstance(w, tuple):
                 self.contents.append((w, (WEIGHT, 1, i in box_columns)))
-            elif w[0] in (FLOW, PACK): # 'pack' used to be called 'flow'
+            elif w[0] in (FLOW, PACK):  # 'pack' used to be called 'flow'
                 f = PACK
                 _ignored, w = w
                 self.contents.append((w, (f, None, i in box_columns)))
             elif len(w) == 2:
                 width, w = w
                 self.contents.append((w, (GIVEN, width, i in box_columns)))
-            elif w[0] == FIXED: # backwards compatibility
+            elif w[0] == FIXED:  # backwards compatibility
                 f = GIVEN
                 _ignored, width, w = w
                 self.contents.append((w, (GIVEN, width, i in box_columns)))
@@ -1775,10 +1800,12 @@ class Columns(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
 
     def _get_widget_list(self):
         ml = MonitoredList(w for w, t in self.contents)
+
         def user_modified():
             self._set_widget_list(ml)
         ml.set_modified_callback(user_modified)
         return ml
+
     def _set_widget_list(self, widgets):
         focus_position = self.focus_position
         self.contents = [
@@ -1799,10 +1826,12 @@ class Columns(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
             # return the old column type names
             ({GIVEN: FIXED, PACK: FLOW}.get(t, t), n)
             for w, (t, n, b) in self.contents)
+
         def user_modified():
             self._set_column_types(ml)
         ml.set_modified_callback(user_modified)
         return ml
+
     def _set_column_types(self, column_types):
         focus_position = self.focus_position
         self.contents = [
@@ -1820,10 +1849,12 @@ class Columns(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
     def _get_box_columns(self):
         ml = MonitoredList(
             i for i, (w, (t, n, b)) in enumerate(self.contents) if b)
+
         def user_modified():
             self._set_box_columns(ml)
         ml.set_modified_callback(user_modified)
         return ml
+
     def _set_box_columns(self, box_columns):
         box_columns = set(box_columns)
         self.contents = [
@@ -1842,6 +1873,7 @@ class Columns(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
         warnings.warn(".has_flow_type is deprecated, "
             "read values from .contents instead.", DeprecationWarning)
         return PACK in self.column_types
+
     def _set_has_pack_type(self, value):
         import warnings
         warnings.warn(".has_flow_type is deprecated, "
@@ -1852,6 +1884,7 @@ class Columns(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
 
     def _get_contents(self):
         return self._contents
+
     def _set_contents(self, c):
         self._contents[:] = c
     contents = property(_get_contents, _set_contents, doc="""
@@ -1949,8 +1982,9 @@ class Columns(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
         empty.
         """
         if not self.widget_list:
-            raise IndexError, "No focus_position, Columns is empty"
+            raise IndexError("No focus_position, Columns is empty")
         return self.contents.focus
+
     def _set_focus_position(self, position):
         """
         Set the widget in focus.
@@ -1961,7 +1995,8 @@ class Columns(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
             if position < 0 or position >= len(self.contents):
                 raise IndexError
         except (TypeError, IndexError):
-            raise IndexError, "No Columns child widget at position %s" % (position,)
+            raise IndexError("No Columns child widget at position %s" % (
+                position,))
         self.contents.focus = position
     focus_position = property(_get_focus_position, _set_focus_position, doc="""
         index of child widget in focus.  Raises IndexError if read when
@@ -2054,7 +2089,7 @@ class Columns(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
                 if b:
                     continue
                 rows = w.rows((mc,),
-                    focus = focus and self.focus_position == i)
+                    focus=focus and self.focus_position == i)
                 box_maxrow = max(box_maxrow, rows)
 
         l = []
@@ -2069,7 +2104,7 @@ class Columns(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
                 sub_size = (mc,) + size[1:]
 
             canv = w.render(sub_size,
-                focus = focus and self.focus_position == i)
+                focus=focus and self.focus_position == i)
 
             if i < len(widths) - 1:
                 mc += self.dividechars
@@ -2210,7 +2245,7 @@ class Columns(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
         if col is None and w.selectable():
             col = cwidth // 2
             col += self.focus_position * self.dividechars
-            col += sum(widths[:self.focus_position] )
+            col += sum(widths[:self.focus_position])
         return col
 
     def rows(self, size, focus=False):
@@ -2238,7 +2273,8 @@ class Columns(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
             `(maxcol, maxrow)` if it contains box widgets.
         :type size: int, int
         """
-        if self.focus_position is None: return key
+        if self.focus_position is None:
+            return key
 
         widths = self.column_widths(size)
         if self.focus_position >= len(widths):
@@ -2259,8 +2295,8 @@ class Columns(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
             return key
 
         if self._command_map[key] == 'cursor left':
-            candidates = range(i-1, -1, -1) # count backwards to 0
-        else: # key == 'right'
+            candidates = range(i-1, -1, -1)  # count backwards to 0
+        else:  # key == 'right'
             candidates = range(i+1, len(self.contents))
 
         for j in candidates:
@@ -2271,20 +2307,15 @@ class Columns(Widget, WidgetContainerMixin, WidgetContainerListContentsMixin):
             return
         return key
 
-
     def selectable(self):
         """Return the selectable value of the focus column."""
         w = self.focus
         return w is not None and w.selectable()
 
 
-
-
-
-
 def _test():
     import doctest
     doctest.testmod()
 
-if __name__=='__main__':
+if __name__ == '__main__':
     _test()

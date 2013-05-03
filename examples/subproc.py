@@ -12,10 +12,13 @@ frame_widget = urwid.Frame(
     body=urwid.Filler(output_widget, valign='bottom'),
     focus_part='header')
 
+
 def exit_on_enter(key):
-    if key == 'enter': raise urwid.ExitMainLoop()
+    if key == 'enter':
+        raise urwid.ExitMainLoop()
 
 loop = urwid.MainLoop(frame_widget, unhandled_input=exit_on_enter)
+
 
 def received_output(data):
     output_widget.set_text(output_widget.text + data)

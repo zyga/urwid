@@ -1,5 +1,6 @@
 import urwid
 
+
 class MultiPudding(urwid.Widget):
     _sizing = frozenset(['flow', 'box'])
 

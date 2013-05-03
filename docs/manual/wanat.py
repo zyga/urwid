@@ -1,5 +1,6 @@
 import urwid
 
+
 class Pudding(urwid.Widget):
     _sizing = frozenset(['flow'])
 

@@ -129,7 +129,7 @@ def main():
                         'important', u"ListBox"), u" widget.  "
                     u"ListBox widgets handle scrolling and changing focus.  A ",
                     ('important', u"Frame"), u" widget is used to keep the "
-        u"instructions at the top of the screen."]
+                    u"instructions at the top of the screen."]
 
     def button_press(button):
         frame.footer = urwid.AttrWrap(urwid.Text(
@@ -163,43 +163,43 @@ def main():
         urwid.Padding(urwid.Text(text_edit), left=2, right=2, min_width=20),
         blank,
         urwid.AttrWrap(urwid.Edit(text_edit_cap1, text_edit_text1),
-            'editbx', 'editfc'),
+                       'editbx', 'editfc'),
         blank,
         urwid.AttrWrap(urwid.Edit(text_edit_cap2, text_edit_text2,
-            multiline=True), 'editbx', 'editfc'),
+                                  multiline=True), 'editbx', 'editfc'),
         blank,
         urwid.AttrWrap(urwid.Edit(text_edit_cap3, text_edit_text3,
-            wrap='clip'), 'editbx', 'editfc'),
+                                  wrap='clip'), 'editbx', 'editfc'),
         blank,
         urwid.Text(text_edit_alignments),
         urwid.AttrWrap(urwid.Edit("", text_edit_left, align='left'),
-            'editbx', 'editfc'),
+                       'editbx', 'editfc'),
         urwid.AttrWrap(urwid.Edit("", text_edit_center,
-            align='center'), 'editbx', 'editfc'),
+                                  align='center'), 'editbx', 'editfc'),
         urwid.AttrWrap(urwid.Edit("", text_edit_right, align='right'),
-            'editbx', 'editfc'),
+                       'editbx', 'editfc'),
         blank,
         urwid.AttrWrap(urwid.IntEdit(text_intedit, 123),
-            'editbx', 'editfc'),
+                       'editbx', 'editfc'),
         blank,
         urwid.Padding(urwid.AttrWrap(urwid.Edit(text_edit_padding, ""),
-            'editbx', 'editfc'), left=10, width=50),
+                      'editbx', 'editfc'), left=10, width=50),
         blank,
         blank,
         urwid.AttrWrap(urwid.Columns([
             urwid.Divider("."),
             urwid.Divider(","),
             urwid.Divider("."),
-            ]), 'bright'),
+        ]), 'bright'),
         blank,
         urwid.Columns([
             urwid.Padding(urwid.Text(text_columns1), left=2, right=0,
-                min_width=20),
+                      min_width=20),
             urwid.Pile([
                 urwid.Divider("~"),
                 urwid.Text(text_columns2),
                 urwid.Divider("_")])
-            ], 3),
+        ], 3),
         blank,
         blank,
         urwid.Columns([
@@ -208,11 +208,11 @@ def main():
                 urwid.Text(text_col_21),
                 urwid.Text(text_col_22),
                 urwid.Text(text_col_23),
-                ], 1),
-            ], 2),
+            ], 1),
+        ], 2),
         blank,
         urwid.Padding(urwid.Text(text_column_widths), left=2, right=2,
-            min_width=20),
+                      min_width=20),
         blank,
         urwid.Columns([
             urwid.AttrWrap(urwid.Text(text_weight % 1), 'reverse'),
@@ -223,7 +223,7 @@ def main():
             ('weight', 5, urwid.AttrWrap(urwid.Text(
                 text_weight % 5), 'reverse')),
             ('weight', 6, urwid.Text(text_weight % 6)),
-            ], 0, min_width=8),
+        ], 0, min_width=8),
         blank,
         urwid.Columns([
             ('weight', 2, urwid.AttrWrap(urwid.Text(
@@ -232,12 +232,12 @@ def main():
             ('weight', 3, urwid.AttrWrap(urwid.Text(
                 text_weight % 2), 'reverse')),
             ('fixed', 14, urwid.Text(text_fixed_14)),
-            ], 0, min_width=8),
+        ], 0, min_width=8),
         blank,
         urwid.Columns([
             urwid.AttrWrap(urwid.Edit(text_edit_col_cap1,
-                text_edit_col_text1, multiline=True),
-                'editbx', 'editfc'),
+                      text_edit_col_text1, multiline=True),
+                      'editbx', 'editfc'),
             urwid.Pile([
                 urwid.AttrWrap(urwid.Edit(
                     text_edit_col_cap2,
@@ -248,8 +248,8 @@ def main():
                     text_edit_col_cap3,
                     text_edit_col_text3),
                     'editbx', 'editfc'),
-                ]),
-            ], 1),
+            ]),
+        ], 1),
         blank,
         urwid.AttrWrap(urwid.Columns([
             urwid.Divider("'"),
@@ -257,15 +257,15 @@ def main():
             urwid.Divider("~"),
             urwid.Divider('"'),
             urwid.Divider("'"),
-            ]), 'bright'),
+        ]), 'bright'),
         blank,
         blank,
         urwid.Padding(urwid.Text(text_gridflow), left=2, right=2,
-            min_width=20),
+                      min_width=20),
         blank,
         urwid.Padding(urwid.GridFlow(
             [urwid.AttrWrap(urwid.Button(txt, button_press),
-                'buttn', 'buttnf') for txt in text_button_list],
+                      'buttn', 'buttnf') for txt in text_button_list],
             13, 3, 1, 'left'),
             left=4, right=3, min_width=13),
         blank,
@@ -277,17 +277,17 @@ def main():
         blank,
         urwid.Padding(urwid.GridFlow(
             [urwid.AttrWrap(urwid.RadioButton(radio_button_group,
-                txt), 'buttn', 'buttnf')
+                      txt), 'buttn', 'buttnf')
                 for txt in text_rb_list],
             13, 3, 1, 'left'),
             left=4, right=3, min_width=13),
         blank,
         blank,
         urwid.Padding(urwid.Text(text_listbox), left=2, right=2,
-            min_width=20),
+                      min_width=20),
         blank,
         blank,
-        ]
+    ]
 
     header = urwid.AttrWrap(urwid.Text(text_header), 'header')
     listbox = urwid.ListBox(urwid.SimpleListWalker(listbox_content))
@@ -304,7 +304,7 @@ def main():
         ('bright', 'dark gray', 'light gray', ('bold', 'standout')),
         ('buttn', 'black', 'dark cyan'),
         ('buttnf', 'white', 'dark blue', 'bold'),
-        ]
+    ]
 
     # use appropriate Screen class
     if urwid.web_display.is_web_request():
@@ -317,7 +317,7 @@ def main():
             raise urwid.ExitMainLoop()
 
     urwid.MainLoop(frame, palette, screen,
-        unhandled_input=unhandled).run()
+                   unhandled_input=unhandled).run()
 
 
 def setup():

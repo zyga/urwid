@@ -330,7 +330,7 @@ def line_width(segs):
     """
     sc = 0
     seglist = segs
-    if segs and len(segs[0]) == 2 and segs[0][1] == None:
+    if segs and len(segs[0]) == 2 and segs[0][1] is None:
         seglist = segs[1:]
     for s in seglist:
         sc += s[0]
@@ -345,7 +345,7 @@ def shift_line(segs, amount):
     """
     assert type(amount) == int, repr(amount)
 
-    if segs and len(segs[0]) == 2 and segs[0][1] == None:
+    if segs and len(segs[0]) == 2 and segs[0][1] is None:
         # existing shift
         amount += segs[0][0]
         if amount:
